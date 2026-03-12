@@ -1,0 +1,401 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  CheckmarkCircle01Icon,
+  AlertCircleIcon,
+  Clock01Icon,
+  ArrowLeft01Icon,
+} from "@hugeicons/core-free-icons"
+
+import { AuthLayout } from "@/components/auth/auth_layout"
+import { PasswordSetupForm } from "./password-setup-form"
+
+// ─── Tipos ─────────────────────────────────────────────────────────────────────
+
+type TokenStatus = "valid" | "expired" | "used" | "invalid"
+
+type TokenState =
+  | { status: "valid"; email: string; name?: string | null }
+  | { status: "expired" }
+  | { status: "used" }
+  | { status: "invalid" }
+
+type PageWrapperProps = {
+  token: string
+  tokenState: TokenState
+}
+
+// ─── Estado: Token expirado ───────────────────────────────────────────────────
+
+function TokenExpiredState() {
+  return (
+    <div className="flex flex-col items-center gap-5 text-center">
+      <div className="relative flex items-center justify-center">
+        <div
+          aria-hidden
+          className="absolute size-20 rounded-full blur-2xl"
+          style={{ background: "oklch(0.76 0.17 65 / 20%)" }}
+        />
+        <div
+          className="relative flex size-14 items-center justify-center rounded-2xl border"
+          style={{
+            background: "oklch(0.76 0.17 65 / 12%)",
+            borderColor: "oklch(0.76 0.17 65 / 25%)",
+            boxShadow: "0 0 0 1px oklch(0.76 0.17 65 / 8%)",
+          }}
+        >
+          <HugeiconsIcon
+            icon={Clock01Icon}
+            size={28}
+            style={{ color: "oklch(0.76 0.17 65)" }}
+          />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <h2
+          className="text-lg font-semibold"
+          style={{ color: "oklch(0.76 0.17 65)" }}
+        >
+          Link expirado
+        </h2>
+        <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
+          Este link de acesso expirou. Solicite um novo convite ao suporte ou
+          aguarde um novo envio automático.
+        </p>
+      </div>
+
+      <a
+        href="/login"
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+      >
+        <HugeiconsIcon icon={ArrowLeft01Icon} size={14} />
+        Voltar ao login
+      </a>
+    </div>
+  )
+}
+
+// ─── Estado: Token já utilizado ───────────────────────────────────────────────
+
+function TokenUsedState() {
+  return (
+    <div className="flex flex-col items-center gap-5 text-center">
+      <div className="relative flex items-center justify-center">
+        <div
+          aria-hidden
+          className="absolute size-20 rounded-full blur-2xl"
+          style={{ background: "oklch(0.60 0.19 264 / 20%)" }}
+        />
+        <div
+          className="relative flex size-14 items-center justify-center rounded-2xl border border-primary/25 bg-primary/12"
+          style={{
+            boxShadow: "0 0 0 1px oklch(0.60 0.20 264 / 8%)",
+          }}
+        >
+          <HugeiconsIcon
+            icon={CheckmarkCircle01Icon}
+            size={28}
+            className="text-primary"
+          />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <h2 className="text-lg font-semibold text-foreground">
+          Senha já configurada
+        </h2>
+        <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
+          Este link já foi utilizado anteriormente. Se precisar redefinir seu
+          acesso, entre em contato com o suporte.
+        </p>
+      </div>
+
+      <a
+        href="/login"
+        className="inline-flex h-10 items-center gap-2 rounded-xl bg-primary/15 px-5 text-sm font-medium text-primary transition-colors hover:bg-primary/25"
+      >
+        Ir para o login
+      </a>
+    </div>
+  )
+}
+
+// ─── Estado: Token inválido ───────────────────────────────────────────────────
+
+function TokenInvalidState() {
+  return (
+    <div className="flex flex-col items-center gap-5 text-center">
+      <div className="relative flex items-center justify-center">
+        <div
+          aria-hidden
+          className="absolute size-20 rounded-full blur-2xl"
+          style={{ background: "oklch(0.63 0.22 27 / 20%)" }}
+        />
+        <div
+          className="relative flex size-14 items-center justify-center rounded-2xl border"
+          style={{
+            background: "oklch(0.63 0.22 27 / 12%)",
+            borderColor: "oklch(0.63 0.22 27 / 25%)",
+            boxShadow: "0 0 0 1px oklch(0.63 0.22 27 / 8%)",
+          }}
+        >
+          <HugeiconsIcon
+            icon={AlertCircleIcon}
+            size={28}
+            style={{ color: "oklch(0.63 0.22 27)" }}
+          />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <h2
+          className="text-lg font-semibold"
+          style={{ color: "oklch(0.63 0.22 27)" }}
+        >
+          Link inválido
+        </h2>
+        <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
+          Este link é inválido ou não existe mais. Verifique se copiou
+          corretamente ou solicite um novo acesso.
+        </p>
+      </div>
+
+      <a
+        href="/login"
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+      >
+        <HugeiconsIcon icon={ArrowLeft01Icon} size={14} />
+        Voltar ao login
+      </a>
+    </div>
+  )
+}
+
+// ─── Estado: Sucesso após salvar ──────────────────────────────────────────────
+
+function SuccessState({ secondsLeft }: { secondsLeft: number }) {
+  return (
+    <div className="flex flex-col items-center gap-6 py-2 text-center animate-scale-in">
+      {/* Ícone de sucesso com glow verde */}
+      <div className="relative flex items-center justify-center">
+        <div
+          aria-hidden
+          className="absolute size-24 rounded-full blur-2xl"
+          style={{ background: "oklch(0.72 0.19 142 / 25%)" }}
+        />
+        {/* Círculo externo pulsante */}
+        <div
+          aria-hidden
+          className="absolute size-20 animate-ping rounded-full border-2 opacity-20"
+          style={{ borderColor: "oklch(0.72 0.19 142)" }}
+        />
+        <div
+          className="relative flex size-16 items-center justify-center rounded-full border-2"
+          style={{
+            background: "oklch(0.72 0.19 142 / 15%)",
+            borderColor: "oklch(0.72 0.19 142 / 40%)",
+            boxShadow:
+              "0 0 32px oklch(0.72 0.19 142 / 20%), 0 0 0 1px oklch(0.72 0.19 142 / 8%)",
+          }}
+        >
+          <HugeiconsIcon
+            icon={CheckmarkCircle01Icon}
+            size={36}
+            style={{ color: "oklch(0.72 0.19 142)" }}
+          />
+        </div>
+      </div>
+
+      {/* Mensagens */}
+      <div className="space-y-2">
+        <h2 className="text-xl font-semibold text-foreground">
+          Senha definida com sucesso!
+        </h2>
+        <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
+          Sua conta LeadSpy está pronta. Acesse o dashboard usando seu email e a
+          senha que você acabou de criar.
+        </p>
+      </div>
+
+      {/* CTA */}
+      <a
+        href="/login"
+        className="inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-8 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.98]"
+        style={{
+          boxShadow: "0 4px 20px oklch(0.60 0.20 264 / 25%)",
+        }}
+      >
+        Acessar o LeadSpy
+      </a>
+
+      {/* Contador de redirecionamento automático */}
+      <p className="text-xs text-muted-foreground">
+        Redirecionando em {secondsLeft}s...
+      </p>
+    </div>
+  )
+}
+
+// ─── Conteúdo por status de token ────────────────────────────────────────────
+
+const invalidTokenContent: Record<
+  Exclude<TokenStatus, "valid">,
+  React.ReactElement
+> = {
+  expired: <TokenExpiredState />,
+  used: <TokenUsedState />,
+  invalid: <TokenInvalidState />,
+}
+
+// ─── Wrapper principal ────────────────────────────────────────────────────────
+
+export function PasswordSetupPageWrapper({ token, tokenState }: PageWrapperProps) {
+  const router = useRouter()
+  const [success, setSuccess] = useState(false)
+  const [secondsLeft, setSecondsLeft] = useState(5)
+
+  useEffect(() => {
+    if (!success) return
+
+    if (secondsLeft <= 0) {
+      router.replace("/login")
+      return
+    }
+
+    const timer = setTimeout(() => {
+      setSecondsLeft((prev) => prev - 1)
+    }, 1000)
+
+    return () => clearTimeout(timer)
+  }, [success, secondsLeft, router])
+
+  const status = tokenState.status
+
+  return (
+    <AuthLayout>
+      <div className="mx-auto flex w-full max-w-md flex-col items-center gap-8 animate-slide-up">
+        {/* Branding */}
+        <div className="flex flex-col items-center gap-2 text-center">
+          <div className="relative flex items-center justify-center">
+            <div
+              aria-hidden
+              className="absolute size-14 rounded-full blur-xl"
+              style={{ background: "oklch(0.60 0.20 264 / 28%)" }}
+            />
+            <div
+              className="relative flex size-11 items-center justify-center rounded-xl border border-primary/30 bg-primary/15"
+              style={{
+                boxShadow:
+                  "0 0 0 1px oklch(0.60 0.20 264 / 10%), 0 4px 16px oklch(0.60 0.20 264 / 18%)",
+              }}
+            >
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden
+              >
+                <path
+                  d="M12 5C7 5 3 12 3 12s4 7 9 7 9-7 9-7-4-7-9-7z"
+                  stroke="oklch(0.60 0.20 264)"
+                  strokeWidth="1.5"
+                  strokeLinejoin="round"
+                />
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="3"
+                  fill="oklch(0.60 0.20 264)"
+                  fillOpacity="0.9"
+                />
+                <circle cx="12" cy="12" r="1.2" fill="white" />
+                <line
+                  x1="3"
+                  y1="12"
+                  x2="6"
+                  y2="12"
+                  stroke="oklch(0.60 0.20 264)"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+                <line
+                  x1="18"
+                  y1="12"
+                  x2="21"
+                  y2="12"
+                  stroke="oklch(0.60 0.20 264)"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </div>
+          </div>
+          <span
+            className="text-xl font-bold tracking-tight text-foreground"
+            style={{ letterSpacing: "-0.02em" }}
+          >
+            Lead<span className="text-primary">Spy</span>
+          </span>
+        </div>
+
+        {/* Card */}
+        <div
+          className="relative w-full rounded-2xl border border-white/[0.08] bg-[oklch(0.11_0.025_255/85%)] p-8 backdrop-blur-xl"
+          style={{
+            boxShadow:
+              "0 32px 80px oklch(0 0 0 / 50%), 0 8px 32px oklch(0 0 0 / 30%), inset 0 1px 0 oklch(1 0 0 / 8%)",
+          }}
+        >
+          {/* Linha de glow no topo */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-full"
+            style={{
+              background:
+                "linear-gradient(90deg, transparent, oklch(0.60 0.20 264 / 50%), transparent)",
+            }}
+          />
+
+          {success ? (
+            <SuccessState secondsLeft={secondsLeft} />
+          ) : status === "valid" ? (
+            <>
+              <div className="mb-8 space-y-2.5">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-primary">
+                  <span
+                    aria-hidden
+                    className="size-1.5 rounded-full bg-primary opacity-80"
+                  />
+                  LeadSpy Access
+                </span>
+                <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+                  Defina sua senha
+                </h1>
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  Finalize a criação da sua conta para acessar o dashboard e
+                  concluir a ativação.
+                </p>
+              </div>
+              <PasswordSetupForm
+                token={token}
+                email={(tokenState as Extract<TokenState, { status: "valid" }>).email}
+                defaultName={
+                  (tokenState as Extract<TokenState, { status: "valid" }>).name ?? ""
+                }
+                onSuccess={() => setSuccess(true)}
+              />
+            </>
+          ) : (
+            invalidTokenContent[status as Exclude<TokenStatus, "valid">]
+          )}
+        </div>
+      </div>
+    </AuthLayout>
+  )
+}

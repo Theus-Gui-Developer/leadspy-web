@@ -1,21 +1,15 @@
-# Next.js template
+# BugSpy Web
 
-This is a Next.js template with shadcn/ui.
+A documentacao viva do projeto esta em `./docs/README.md`.
 
-## Adding components
-
-To add components to your app, run the following command:
+Comandos uteis:
 
 ```bash
-npx shadcn@latest add button
+npm install
+npm run dev
+npm run db:generate
+npm run db:migrate
 ```
 
-This will place the ui components in the `components` directory.
-
-## Using components
-
-To use the components in your app, import them as follows:
-
-```tsx
-import { Button } from "@/components/ui/button";
-```
+Observacao:
+- nao rodamos migrations automaticamente; qualquer alteracao de schema deve ser revisada manualmente antes.
