@@ -30,8 +30,8 @@ type AppSidebarProps = {
 const navLinks = [
   { href: "/dashboard", label: "Dashboard", icon: Home01Icon },
   { href: "/dashboard/assinatura", label: "Assinatura", icon: CrownIcon },
-  { href: "/dashboard/conta", label: "Minha Conta", icon: UserIcon },
   { href: "/dashboard/afiliado", label: "Venda como Afiliado", icon: MoneyBag01Icon },
+  { href: "/dashboard/conta", label: "Minha Conta", icon: UserIcon },
 ]
 
 function getInitials(name: string) {

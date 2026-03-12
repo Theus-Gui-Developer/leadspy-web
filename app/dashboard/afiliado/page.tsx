@@ -140,17 +140,15 @@ export default function AfilitadoPage() {
           <div className="relative flex flex-col items-center gap-8 px-8 py-14 text-center lg:flex-row lg:items-center lg:gap-16 lg:text-left">
             {/* Número gigante de comissão */}
             <div className="shrink-0">
-              <div className="relative flex items-end justify-center lg:justify-start">
+              <div className="flex flex-col items-center gap-3 lg:items-start">
                 {/* Label acima */}
-                <div className="absolute -top-5 left-0 right-0 flex justify-center lg:justify-start">
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[#3c83f6]/20 bg-[#3c83f6]/10 px-3 py-1 text-xs font-semibold tracking-widest text-[#3c83f6] uppercase">
-                    <HugeiconsIcon icon={FlashIcon} size={11} />
-                    Comissão por venda
-                  </span>
-                </div>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#3c83f6]/20 bg-[#3c83f6]/10 px-3 py-1 text-xs font-semibold tracking-widest text-[#3c83f6] uppercase">
+                  <HugeiconsIcon icon={FlashIcon} size={11} />
+                  Comissão por venda
+                </span>
 
                 {/* O número */}
-                <span className="bg-gradient-to-br from-white via-[#93b4fc] to-[#3c83f6] bg-clip-text font-mono text-[96px] font-black leading-none tracking-tighter text-transparent lg:text-[112px]">
+                <span className="bg-gradient-to-br from-white via-[#93b4fc] to-[#3c83f6] bg-clip-text font-mono text-[96px] font-black leading-[1.1] tracking-tighter text-transparent lg:text-[112px]">
                   70%
                 </span>
               </div>
