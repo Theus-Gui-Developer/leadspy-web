@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { HugeiconsIcon } from "@hugeicons/react"
@@ -69,38 +70,15 @@ export function AppSidebar({ user, onClose }: AppSidebarProps) {
   return (
     <div className="flex h-full flex-col bg-secondary">
       {/* Logo */}
-      <div className="flex items-center gap-2.5 px-5 py-5">
-        <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10 ring-1 ring-primary/20">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            className="text-primary"
-          >
-            <circle cx="12" cy="12" r="3" fill="currentColor" />
-            <circle
-              cx="12"
-              cy="12"
-              r="7"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeDasharray="2 2"
-              opacity="0.6"
-            />
-            <circle
-              cx="12"
-              cy="12"
-              r="11"
-              stroke="currentColor"
-              strokeWidth="1"
-              opacity="0.3"
-            />
-          </svg>
-        </div>
-        <span className="text-base font-semibold tracking-tight text-foreground">
-          LeadSpy
-        </span>
+      <div className="flex items-center px-5 py-5">
+        <Image
+          src="/logo_extended.png"
+          alt="LeadSpy"
+          width={120}
+          height={32}
+          className="h-8 w-auto object-contain"
+          priority
+        />
       </div>
 
       <Separator />

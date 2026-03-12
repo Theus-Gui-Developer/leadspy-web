@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 
 export default function NotFound() {
   return (
@@ -30,43 +31,14 @@ export default function NotFound() {
       {/* Conteúdo */}
       <div className="relative z-10 flex flex-col items-center gap-8 text-center animate-slide-up">
         {/* Logo */}
-        <div className="flex items-center gap-2.5">
-          <div
-            className="flex size-8 items-center justify-center rounded-lg border border-primary/30 bg-primary/10"
-            style={{
-              boxShadow: "0 0 0 1px oklch(0.60 0.20 264 / 8%)",
-            }}
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden
-            >
-              <path
-                d="M12 5C7 5 3 12 3 12s4 7 9 7 9-7 9-7-4-7-9-7z"
-                stroke="oklch(0.60 0.20 264)"
-                strokeWidth="1.5"
-                strokeLinejoin="round"
-              />
-              <circle
-                cx="12"
-                cy="12"
-                r="3"
-                fill="oklch(0.60 0.20 264)"
-                fillOpacity="0.9"
-              />
-              <circle cx="12" cy="12" r="1.2" fill="white" />
-            </svg>
-          </div>
-          <span
-            className="text-base font-semibold tracking-tight text-foreground"
-            style={{ letterSpacing: "-0.02em" }}
-          >
-            Lead<span className="text-primary">Spy</span>
-          </span>
-        </div>
+        <Image
+          src="/logo_extended.png"
+          alt="LeadSpy"
+          width={140}
+          height={36}
+          className="h-9 w-auto object-contain"
+          priority
+        />
 
         {/* Código 404 */}
         <div className="space-y-1">

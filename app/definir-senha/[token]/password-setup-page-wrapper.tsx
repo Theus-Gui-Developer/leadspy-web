@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
 
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
@@ -280,69 +281,14 @@ export function PasswordSetupPageWrapper({ token, tokenState }: PageWrapperProps
     <AuthLayout>
       <div className="mx-auto flex w-full max-w-md flex-col items-center gap-8 animate-slide-up">
         {/* Branding */}
-        <div className="flex flex-col items-center gap-2 text-center">
-          <div className="relative flex items-center justify-center">
-            <div
-              aria-hidden
-              className="absolute size-14 rounded-full blur-xl"
-              style={{ background: "oklch(0.60 0.20 264 / 28%)" }}
-            />
-            <div
-              className="relative flex size-11 items-center justify-center rounded-xl border border-primary/30 bg-primary/15"
-              style={{
-                boxShadow:
-                  "0 0 0 1px oklch(0.60 0.20 264 / 10%), 0 4px 16px oklch(0.60 0.20 264 / 18%)",
-              }}
-            >
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden
-              >
-                <path
-                  d="M12 5C7 5 3 12 3 12s4 7 9 7 9-7 9-7-4-7-9-7z"
-                  stroke="oklch(0.60 0.20 264)"
-                  strokeWidth="1.5"
-                  strokeLinejoin="round"
-                />
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="3"
-                  fill="oklch(0.60 0.20 264)"
-                  fillOpacity="0.9"
-                />
-                <circle cx="12" cy="12" r="1.2" fill="white" />
-                <line
-                  x1="3"
-                  y1="12"
-                  x2="6"
-                  y2="12"
-                  stroke="oklch(0.60 0.20 264)"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-                <line
-                  x1="18"
-                  y1="12"
-                  x2="21"
-                  y2="12"
-                  stroke="oklch(0.60 0.20 264)"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </div>
-          </div>
-          <span
-            className="text-xl font-bold tracking-tight text-foreground"
-            style={{ letterSpacing: "-0.02em" }}
-          >
-            Lead<span className="text-primary">Spy</span>
-          </span>
-        </div>
+        <Image
+          src="/logo_extended.png"
+          alt="LeadSpy"
+          width={140}
+          height={36}
+          className="h-9 w-auto object-contain"
+          priority
+        />
 
         {/* Card */}
         <div
