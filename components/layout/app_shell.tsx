@@ -28,6 +28,7 @@ type AppShellProps = {
 
 const pageTitles: Record<string, string> = {
   "/dashboard": "Dashboard",
+  "/dashboard/anuncios": "Meus Anúncios",
   "/dashboard/assinatura": "Assinatura",
   "/dashboard/conta": "Minha Conta",
   "/dashboard/afiliado": "Venda como Afiliado",

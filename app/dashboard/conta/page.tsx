@@ -3,14 +3,19 @@ import Link from "next/link"
 
 import { getMe } from "@/lib/api/get_me"
 import { resolvePlanFromId } from "@/lib/api/plan_resolver"
+import { AccountPasswordForm } from "@/components/dashboard/account-password-form"
+import { AccountProfileForm } from "@/components/dashboard/account-profile-form"
 import { PageHeader } from "@/components/layout/page_header"
 import { ProfileCard } from "@/components/dashboard/profile_card"
-import { InfoField } from "@/components/dashboard/info_field"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { StatusBadge } from "@/components/ui/status_badge"
-import { Button } from "@/components/ui/button"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { ShieldCheck, CrownIcon, ArrowRight01Icon } from "@hugeicons/core-free-icons"
+import {
+  ShieldCheck,
+  CrownIcon,
+  ArrowRight01Icon,
+  UserIcon,
+} from "@hugeicons/core-free-icons"
 
 function formatDate(date: Date): string {
   return new Intl.DateTimeFormat("pt-BR", {
@@ -18,15 +23,6 @@ function formatDate(date: Date): string {
     month: "long",
     year: "numeric",
   }).format(date)
-}
-
-function getRoleLabel(role: string): string {
-  const labels: Record<string, string> = {
-    admin: "Administrador",
-    customer: "Cliente",
-    user: "Usuário",
-  }
-  return labels[role] ?? role
 }
 
 export default async function ContaPage() {
@@ -44,7 +40,7 @@ export default async function ContaPage() {
   }
 
   const plan = resolvePlanFromId(subscription.planId)
-  const expiresAt = new Date(subscription.expiresAt)
+  const expiresAt = subscription.expiresAt ? new Date(subscription.expiresAt) : null
 
   return (
     <div className="animate-fade-in space-y-8">
@@ -75,16 +71,19 @@ export default async function ContaPage() {
           {/* Seção de informações pessoais */}
           <Card className="ring-foreground/10 transition-all duration-200 hover:ring-foreground/20">
             <CardHeader className="border-b border-border/50 pb-4">
-              <CardTitle className="text-sm font-semibold">
-                Informações da conta
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-5">
-              <div className="grid gap-5 sm:grid-cols-2">
-                <InfoField label="Nome completo" value={user.name} />
-                <InfoField label="Email" value={user.email} copyable />
-                <InfoField label="Função" value={getRoleLabel(user.role)} />
+              <div className="flex items-center gap-2">
+                <HugeiconsIcon
+                  icon={UserIcon}
+                  size={15}
+                  className="text-muted-foreground"
+                />
+                <CardTitle className="text-sm font-semibold">
+                  Informações da conta
+                </CardTitle>
               </div>
+            </CardHeader>
+            <CardContent className="space-y-5 pt-5">
+              <AccountProfileForm initialName={user.name} email={user.email} />
             </CardContent>
           </Card>
 
@@ -103,26 +102,7 @@ export default async function ContaPage() {
               </div>
             </CardHeader>
             <CardContent className="pt-5">
-              <div className="flex items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <p className="text-sm font-medium text-foreground">Senha</p>
-                  <p className="font-mono text-sm tracking-widest text-muted-foreground">
-                    ••••••••••••
-                  </p>
-                </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled
-                  title="Em breve"
-                  className="shrink-0"
-                >
-                  Alterar senha
-                  <span className="ml-1.5 rounded-full bg-foreground/10 px-1.5 py-0.5 text-xs text-muted-foreground">
-                    Em breve
-                  </span>
-                </Button>
-              </div>
+              <AccountPasswordForm email={user.email} />
             </CardContent>
           </Card>
 
@@ -170,7 +150,7 @@ export default async function ContaPage() {
                     Válido até
                   </p>
                   <p className="text-sm font-medium text-foreground">
-                    {formatDate(expiresAt)}
+                    {expiresAt ? formatDate(expiresAt) : "Vitalicio"}
                   </p>
                 </div>
               </div>

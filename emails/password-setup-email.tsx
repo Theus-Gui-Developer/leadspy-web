@@ -14,19 +14,32 @@ type PasswordSetupEmailProps = {
   actionUrl: string
   customerName?: string | null
   expiresInHours: number
+  mode?: "setup" | "reset"
 }
 
 export function PasswordSetupEmail({
   actionUrl,
   customerName,
   expiresInHours,
+  mode = "setup",
 }: PasswordSetupEmailProps) {
   const firstName = customerName?.trim().split(" ")[0]
+  const isReset = mode === "reset"
+  const preview = isReset
+    ? "Recebemos um pedido para redefinir sua senha"
+    : "Seu acesso ao LeadSpy esta pronto"
+  const intro = isReset
+    ? "Recebemos um pedido para redefinir a senha da sua conta LeadSpy."
+    : "Recebemos a confirmacao da sua compra. Para ativar seu acesso, defina agora a senha da sua conta."
+  const buttonLabel = isReset ? "Redefinir senha" : "Definir senha"
+  const helperText = isReset
+    ? `Se voce nao solicitou esta redefinicao, ignore este email. Este link expira em ${expiresInHours} horas. Se o botao nao funcionar, copie e cole a URL abaixo no navegador:`
+    : `Este link expira em ${expiresInHours} horas. Se o botao nao funcionar, copie e cole a URL abaixo no navegador:`
 
   return (
     <Html lang="pt-BR">
       <Head />
-      <Preview>Seu acesso ao LeadSpy esta pronto</Preview>
+      <Preview>{preview}</Preview>
       <Body style={body}>
         <Container style={container}>
           <Section style={card}>
@@ -34,17 +47,11 @@ export function PasswordSetupEmail({
             <Heading style={heading}>
               {firstName ? `Ola, ${firstName}` : "Ola"}
             </Heading>
-            <Text style={paragraph}>
-              Recebemos a confirmacao da sua compra. Para ativar seu acesso, defina
-              agora a senha da sua conta.
-            </Text>
+            <Text style={paragraph}>{intro}</Text>
             <Button href={actionUrl} style={button}>
-              Definir senha
+              {buttonLabel}
             </Button>
-            <Text style={paragraph}>
-              Este link expira em {expiresInHours} horas. Se o botao nao funcionar,
-              copie e cole a URL abaixo no navegador:
-            </Text>
+            <Text style={paragraph}>{helperText}</Text>
             <Text style={linkText}>{actionUrl}</Text>
           </Section>
         </Container>

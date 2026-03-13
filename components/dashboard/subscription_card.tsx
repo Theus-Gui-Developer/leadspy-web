@@ -9,7 +9,7 @@ type SubscriptionCardProps = {
   subscription: {
     id: string
     status: "active" | "expired" | "cancelled" | "pending" | "refunded" | "chargeback"
-    expiresAt: Date
+    expiresAt: Date | null
     createdAt?: Date | null
   }
   plan: {
@@ -25,6 +25,10 @@ function getDaysRemaining(expiresAt: Date): number {
   return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)))
 }
 
+function isLifetimePlan(plan: SubscriptionCardProps["plan"], expiresAt: Date | null) {
+  return plan.durationMonths === 0 || expiresAt === null
+}
+
 function formatDate(date: Date): string {
   return new Intl.DateTimeFormat("pt-BR", {
     day: "2-digit",
@@ -33,11 +37,11 @@ function formatDate(date: Date): string {
   }).format(date)
 }
 
-function getProgressColor(status: string, daysRemaining: number): string {
+function getProgressColor(status: string, daysRemaining: number | null): string {
   if (status === "expired" || status === "chargeback") return "bg-red-500"
   if (status === "cancelled" || status === "refunded") return "bg-zinc-500"
   if (status === "pending") return "bg-[#3c83f6]"
-  if (daysRemaining <= 7) return "bg-amber-400"
+  if (daysRemaining !== null && daysRemaining <= 7) return "bg-amber-400"
   return "bg-emerald-500"
 }
 
@@ -69,14 +73,17 @@ const statusMessages: Record<string, { message: string; color: string }> = {
 }
 
 export function SubscriptionCard({ subscription, plan }: SubscriptionCardProps) {
-  const daysRemaining = getDaysRemaining(subscription.expiresAt)
-  const totalDays = plan.durationMonths * 30
+  const lifetime = isLifetimePlan(plan, subscription.expiresAt)
+  const daysRemaining = subscription.expiresAt ? getDaysRemaining(subscription.expiresAt) : null
+  const totalDays = Math.max(plan.durationMonths * 30, 1)
   const progressValue =
-    subscription.status === "active" || subscription.status === "pending"
-      ? Math.min(100, (daysRemaining / totalDays) * 100)
-      : 0
+    lifetime
+      ? 100
+      : subscription.status === "active" || subscription.status === "pending"
+        ? Math.min(100, ((daysRemaining ?? 0) / totalDays) * 100)
+        : 0
   const progressColor = getProgressColor(subscription.status, daysRemaining)
-  const isUrgent = daysRemaining <= 7 && subscription.status === "active"
+  const isUrgent = !lifetime && (daysRemaining ?? 0) <= 7 && subscription.status === "active"
   const statusInfo = statusMessages[subscription.status] ?? statusMessages.active
 
   return (
@@ -97,7 +104,11 @@ export function SubscriptionCard({ subscription, plan }: SubscriptionCardProps) 
                 Plano {plan.name}
               </CardTitle>
               <p className="text-xs text-muted-foreground">
-                {plan.durationMonths === 1 ? "Mensal" : `${plan.durationMonths} meses`}
+                {lifetime
+                  ? "Vitalicio"
+                  : plan.durationMonths === 1
+                    ? "Mensal"
+                    : `${plan.durationMonths} meses`}
               </p>
             </div>
           </div>
@@ -121,15 +132,15 @@ export function SubscriptionCard({ subscription, plan }: SubscriptionCardProps) 
         {/* Barra de progresso */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-foreground">Tempo restante</p>
-            <span className={cn(
-              "text-sm font-semibold tabular-nums",
-              isUrgent ? "text-amber-400" : "text-foreground"
-            )}>
-              {daysRemaining} dias
-            </span>
-          </div>
-          <div className="h-2 w-full overflow-hidden rounded-full bg-foreground/10">
+              <p className="text-sm font-medium text-foreground">Tempo restante</p>
+              <span className={cn(
+                "text-sm font-semibold tabular-nums",
+                isUrgent ? "text-amber-400" : "text-foreground"
+              )}>
+                {lifetime ? "Vitalicio" : `${daysRemaining} dias`}
+              </span>
+            </div>
+            <div className="h-2 w-full overflow-hidden rounded-full bg-foreground/10">
             <div
               className={cn("h-full rounded-full transition-all", progressColor)}
               style={{ width: `${progressValue}%` }}
@@ -137,7 +148,7 @@ export function SubscriptionCard({ subscription, plan }: SubscriptionCardProps) 
           </div>
           <div className="flex justify-between text-xs text-muted-foreground">
             <span>0 dias</span>
-            <span>{totalDays} dias</span>
+            <span>{lifetime ? "Vitalicio" : `${totalDays} dias`}</span>
           </div>
         </div>
 
@@ -173,7 +184,7 @@ export function SubscriptionCard({ subscription, plan }: SubscriptionCardProps) 
                 "mt-0.5 text-sm font-medium",
                 isUrgent ? "text-amber-400" : "text-foreground"
               )}>
-                {formatDate(subscription.expiresAt)}
+                {subscription.expiresAt ? formatDate(subscription.expiresAt) : "Vitalicio"}
               </p>
             </div>
           </div>

@@ -9,7 +9,7 @@ import { cookies, headers } from "next/headers"
 export type MeSubscription = {
   id: string
   status: "active" | "expired" | "cancelled" | "pending" | "refunded" | "chargeback"
-  expiresAt: string // ISO string
+  expiresAt: string | null // ISO string
   planId: string
 }
 

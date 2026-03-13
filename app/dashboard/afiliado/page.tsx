@@ -53,35 +53,27 @@ const benefits = [
 
 const colorMap = {
   blue: {
-    bg: "bg-[#3c83f6]/10",
-    icon: "text-[#3c83f6]",
-    highlight: "text-[#3c83f6]",
-    glow: "group-hover:shadow-[0_0_28px_-4px_rgba(60,131,246,0.3)]",
-    ring: "group-hover:ring-[#3c83f6]/30",
-    bar: "bg-[#3c83f6]",
+    bg: "bg-primary/10",
+    icon: "text-primary",
+    highlight: "text-primary",
+    bar: "bg-primary",
   },
   emerald: {
     bg: "bg-emerald-500/10",
     icon: "text-emerald-400",
     highlight: "text-emerald-400",
-    glow: "group-hover:shadow-[0_0_28px_-4px_rgba(52,211,153,0.3)]",
-    ring: "group-hover:ring-emerald-500/30",
     bar: "bg-emerald-500",
   },
   amber: {
     bg: "bg-amber-500/10",
     icon: "text-amber-400",
     highlight: "text-amber-400",
-    glow: "group-hover:shadow-[0_0_28px_-4px_rgba(251,191,36,0.3)]",
-    ring: "group-hover:ring-amber-500/30",
     bar: "bg-amber-500",
   },
   violet: {
     bg: "bg-violet-500/10",
     icon: "text-violet-400",
     highlight: "text-violet-400",
-    glow: "group-hover:shadow-[0_0_28px_-4px_rgba(167,139,250,0.3)]",
-    ring: "group-hover:ring-violet-500/30",
     bar: "bg-violet-500",
   },
 }
@@ -120,35 +112,35 @@ export default function AfilitadoPage() {
 
       {/* ── HERO ── */}
       <section>
-        <div className="relative overflow-hidden rounded-2xl border border-[#3c83f6]/20 bg-gradient-to-br from-[#0a0f1e] via-[#0d1321] to-[#111827]">
+        <div className="relative overflow-hidden rounded-md border border-primary/20 bg-card">
           {/* Malha de pontos decorativa */}
           <div
-            className="pointer-events-none absolute inset-0 opacity-[0.07]"
+            className="pointer-events-none absolute inset-0 opacity-[0.05]"
             style={{
               backgroundImage:
-                "radial-gradient(circle, #3c83f6 1px, transparent 1px)",
+                "radial-gradient(circle, oklch(0.6 0.2 264) 1px, transparent 1px)",
               backgroundSize: "28px 28px",
             }}
           />
 
           {/* Glow radial central */}
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,rgba(60,131,246,0.12),transparent)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,oklch(0.6_0.2_264_/_10%),transparent)]" />
 
           {/* Glow lateral direito */}
-          <div className="pointer-events-none absolute right-0 top-0 size-96 -translate-y-1/4 translate-x-1/4 rounded-full bg-[#3c83f6]/5 blur-3xl" />
+          <div className="pointer-events-none absolute top-0 right-0 size-96 translate-x-1/4 -translate-y-1/4 rounded-full bg-primary/5 blur-3xl" />
 
           <div className="relative flex flex-col items-center gap-8 px-8 py-14 text-center lg:flex-row lg:items-center lg:gap-16 lg:text-left">
             {/* Número gigante de comissão */}
             <div className="shrink-0">
               <div className="flex flex-col items-center gap-3 lg:items-start">
                 {/* Label acima */}
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#3c83f6]/20 bg-[#3c83f6]/10 px-3 py-1 text-xs font-semibold tracking-widest text-[#3c83f6] uppercase">
+                <span className="inline-flex items-center gap-1.5 rounded-sm border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold tracking-widest text-primary uppercase">
                   <HugeiconsIcon icon={FlashIcon} size={11} />
                   Comissão por venda
                 </span>
 
                 {/* O número */}
-                <span className="bg-gradient-to-br from-white via-[#93b4fc] to-[#3c83f6] bg-clip-text font-mono text-[96px] font-black leading-[1.1] tracking-tighter text-transparent lg:text-[112px]">
+                <span className="bg-gradient-to-br from-foreground via-primary/80 to-primary bg-clip-text pr-2 font-mono text-[96px] leading-[1.1] font-black tracking-tighter text-transparent lg:text-[112px]">
                   70%
                 </span>
               </div>
@@ -158,14 +150,14 @@ export default function AfilitadoPage() {
             </div>
 
             {/* Separador vertical */}
-            <div className="hidden h-32 w-px bg-gradient-to-b from-transparent via-[#3c83f6]/20 to-transparent lg:block" />
+            <div className="hidden h-32 w-px bg-gradient-to-b from-transparent via-primary/20 to-transparent lg:block" />
 
             {/* Copy */}
             <div className="flex-1 space-y-5">
               <div className="space-y-3">
                 <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
                   Venda o LeadSpy e construa{" "}
-                  <span className="text-[#3c83f6]">renda recorrente</span>
+                  <span className="text-primary">renda recorrente</span>
                 </h2>
                 <p className="max-w-lg text-base text-muted-foreground">
                   Um dos maiores programas de afiliados de ferramentas para
@@ -178,13 +170,17 @@ export default function AfilitadoPage() {
                 <Button
                   disabled
                   size="lg"
-                  className="gap-2 bg-[#3c83f6] text-white hover:bg-[#2563eb] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="gap-2 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <HugeiconsIcon icon={RocketIcon} size={16} />
                   Quero ser afiliado
                 </Button>
-                <span className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-muted-foreground">
-                  <HugeiconsIcon icon={DiamondIcon} size={12} className="text-[#3c83f6]" />
+                <span className="flex items-center gap-1.5 rounded-sm border border-border bg-secondary px-3 py-2 text-xs font-medium text-muted-foreground">
+                  <HugeiconsIcon
+                    icon={DiamondIcon}
+                    size={12}
+                    className="text-primary"
+                  />
                   Programa em breve
                 </span>
               </div>
@@ -208,18 +204,22 @@ export default function AfilitadoPage() {
             return (
               <div
                 key={b.label}
-                className={`group relative overflow-hidden rounded-xl border border-white/[0.06] bg-[#0d1321] p-5 transition-all duration-300 ring-1 ring-transparent ${c.ring} ${c.glow}`}
+                className="group relative overflow-hidden rounded-md border border-border/60 bg-card p-5 transition-colors hover:border-border"
               >
                 {/* Barra de cor no topo */}
-                <div className={`absolute inset-x-0 top-0 h-[2px] ${c.bar} opacity-60`} />
+                <div
+                  className={`absolute inset-x-0 top-0 h-[2px] ${c.bar} opacity-50`}
+                />
 
                 {/* Ícone */}
-                <div className={`mb-4 flex size-11 items-center justify-center rounded-xl ${c.bg}`}>
-                  <HugeiconsIcon icon={b.icon} size={20} className={c.icon} />
+                <div
+                  className={`mb-4 flex size-10 items-center justify-center rounded-sm ${c.bg}`}
+                >
+                  <HugeiconsIcon icon={b.icon} size={18} className={c.icon} />
                 </div>
 
                 {/* Conteúdo */}
-                <p className="mb-0.5 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                <p className="mb-0.5 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
                   {b.label}
                 </p>
                 <p className={`mb-2 text-xl font-bold ${c.highlight}`}>
@@ -248,21 +248,21 @@ export default function AfilitadoPage() {
             <div key={step.number} className="relative">
               {/* Linha conectora (exceto último) */}
               {i < steps.length - 1 && (
-                <div className="absolute right-0 top-9 hidden h-px w-1/2 translate-x-full bg-gradient-to-r from-[#3c83f6]/30 to-transparent sm:block" />
+                <div className="absolute top-9 right-0 hidden h-px w-1/2 translate-x-full bg-gradient-to-r from-primary/25 to-transparent sm:block" />
               )}
 
-              <Card className="h-full border-white/[0.06] bg-[#0d1321] ring-1 ring-transparent transition-all duration-300 hover:ring-[#3c83f6]/20 hover:shadow-[0_0_24px_-6px_rgba(60,131,246,0.2)]">
-                <CardContent className="flex flex-col gap-4 p-6">
+              <Card className="h-full transition-colors hover:border-border">
+                <CardContent className="flex flex-col gap-4 p-5">
                   {/* Número + ícone */}
                   <div className="flex items-center gap-3">
-                    <div className="flex size-10 items-center justify-center rounded-xl bg-[#3c83f6]/10 ring-1 ring-[#3c83f6]/20">
+                    <div className="flex size-9 items-center justify-center rounded-sm bg-primary/10 ring-1 ring-primary/20">
                       <HugeiconsIcon
                         icon={step.icon}
-                        size={18}
-                        className="text-[#3c83f6]"
+                        size={16}
+                        className="text-primary"
                       />
                     </div>
-                    <span className="font-mono text-3xl font-black text-white/10 leading-none">
+                    <span className="font-mono text-3xl leading-none font-black text-foreground/10">
                       {step.number}
                     </span>
                   </div>
@@ -285,21 +285,21 @@ export default function AfilitadoPage() {
 
       {/* ── CTA FINAL ── */}
       <section>
-        <div className="relative overflow-hidden rounded-2xl border border-[#3c83f6]/15 bg-gradient-to-r from-[#0a0f1e] via-[#0d1321] to-[#0a0f1e] p-8">
+        <div className="relative overflow-hidden rounded-md border border-primary/15 bg-card p-8">
           {/* Brilho de fundo */}
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_80%_at_50%_50%,rgba(60,131,246,0.06),transparent)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_80%_at_50%_50%,oklch(0.6_0.2_264_/_6%),transparent)]" />
 
           <div className="relative flex flex-col items-center gap-6 text-center sm:flex-row sm:text-left">
             {/* Ícone central */}
             <div className="relative shrink-0">
-              <div className="flex size-16 items-center justify-center rounded-2xl bg-[#3c83f6]/10 ring-1 ring-[#3c83f6]/20">
+              <div className="flex size-14 items-center justify-center rounded-md bg-primary/10 ring-1 ring-primary/20">
                 <HugeiconsIcon
                   icon={MoneyBag01Icon}
-                  size={30}
-                  className="text-[#3c83f6]"
+                  size={26}
+                  className="text-primary"
                 />
               </div>
-              <div className="absolute inset-0 -z-10 rounded-2xl bg-[#3c83f6] opacity-15 blur-2xl" />
+              <div className="absolute inset-0 -z-10 rounded-md bg-primary opacity-10 blur-2xl" />
             </div>
 
             {/* Texto */}
@@ -310,7 +310,7 @@ export default function AfilitadoPage() {
               <p className="text-sm text-muted-foreground">
                 Entre na lista de espera e seja um dos primeiros afiliados do
                 LeadSpy com{" "}
-                <span className="font-semibold text-[#3c83f6]">
+                <span className="font-semibold text-primary">
                   até 70% de comissão recorrente
                 </span>
                 .
@@ -322,13 +322,17 @@ export default function AfilitadoPage() {
               <Button
                 disabled
                 size="lg"
-                className="gap-2 bg-[#3c83f6] px-6 text-white hover:bg-[#2563eb] disabled:cursor-not-allowed disabled:opacity-60"
+                className="gap-2 px-6 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <HugeiconsIcon icon={RocketIcon} size={16} />
                 Entrar na lista de espera
               </Button>
               <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <HugeiconsIcon icon={Tick02Icon} size={12} className="text-emerald-400" />
+                <HugeiconsIcon
+                  icon={Tick02Icon}
+                  size={12}
+                  className="text-emerald-400"
+                />
                 Sem compromisso · Gratuito
               </span>
             </div>

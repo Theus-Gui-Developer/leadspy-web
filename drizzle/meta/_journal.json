@@ -8,6 +8,13 @@
       "when": 1773270932909,
       "tag": "0000_wandering_skin",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1773404966854,
+      "tag": "0001_adorable_the_spike",
+      "breakpoints": true
     }
   ]
 }

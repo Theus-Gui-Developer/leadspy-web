@@ -9,6 +9,7 @@ import {
   CrownIcon,
   UserIcon,
   MoneyBag01Icon,
+  AdvertisimentIcon,
 } from "@hugeicons/core-free-icons"
 
 import { cn } from "@/lib/utils"
@@ -30,6 +31,7 @@ type AppSidebarProps = {
 
 const navLinks = [
   { href: "/dashboard", label: "Dashboard", icon: Home01Icon },
+  { href: "/dashboard/anuncios", label: "Meus Anúncios", icon: AdvertisimentIcon },
   { href: "/dashboard/assinatura", label: "Assinatura", icon: CrownIcon },
   { href: "/dashboard/afiliado", label: "Venda como Afiliado", icon: MoneyBag01Icon },
   { href: "/dashboard/conta", label: "Minha Conta", icon: UserIcon },
@@ -97,7 +99,7 @@ export function AppSidebar({ user, onClose }: AppSidebarProps) {
               href={link.href}
               onClick={onClose}
               className={cn(
-                "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all",
+                "group flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-all",
                 isActive
                   ? "border-l-2 border-primary bg-primary/10 pl-[10px] text-foreground"
                   : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
@@ -124,7 +126,7 @@ export function AppSidebar({ user, onClose }: AppSidebarProps) {
 
       {/* Usuário + Logout */}
       <div className="px-3 py-4">
-        <div className="flex items-center gap-3 rounded-lg px-2 py-2">
+        <div className="flex items-center gap-3 rounded-md px-2 py-2">
           <SidebarAvatar user={user} />
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium text-foreground">

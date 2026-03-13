@@ -2,6 +2,7 @@
 
 import { type FormEvent, useState } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
@@ -96,7 +97,15 @@ export function LoginForm() {
 
       {/* Campo Senha */}
       <div className="space-y-2">
-        <Label htmlFor="password">Senha</Label>
+        <div className="flex items-center justify-between gap-3">
+          <Label htmlFor="password">Senha</Label>
+          <Link
+            href="/recuperar-senha"
+            className="text-xs text-primary transition-opacity hover:opacity-80"
+          >
+            Esqueci minha senha
+          </Link>
+        </div>
         <div className="relative">
           <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-muted-foreground">
             <HugeiconsIcon icon={LockPasswordIcon} size={16} />
@@ -156,7 +165,7 @@ export function LoginForm() {
       <p className="text-center text-xs text-muted-foreground">
         Não tem acesso?{" "}
         <span className="text-foreground/60">
-          Entre em contato com o suporte.
+          Seu acesso e liberado apos a confirmacao da compra.
         </span>
       </p>
     </form>

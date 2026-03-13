@@ -24,6 +24,8 @@ type PasswordSetupTokenState =
       status: "invalid" | "expired" | "used"
     }
 
+type PasswordSetupTokenSource = "perfectpay_webhook" | "password_reset"
+
 function normalizeEmail(email: string) {
   return email.trim().toLowerCase()
 }
@@ -57,6 +59,8 @@ export async function issuePasswordSetupToken(params: {
   email: string
   name?: string | null
   subscriptionId?: string | null
+  userId?: string | null
+  source?: PasswordSetupTokenSource
 }) {
   const email = normalizeEmail(params.email)
   const name = normalizeName(params.name)
@@ -95,10 +99,11 @@ export async function issuePasswordSetupToken(params: {
       email,
       name,
       subscriptionId: params.subscriptionId ?? null,
+      userId: params.userId ?? null,
       tokenHash,
       expiresAt,
       metadata: {
-        source: "perfectpay_webhook",
+        source: params.source ?? "perfectpay_webhook",
       },
     })
     .returning({ id: passwordSetupTokens.id })
@@ -117,19 +122,24 @@ export async function sendPasswordSetupEmail(params: {
   email: string
   name?: string | null
   rawToken: string
+  mode?: "setup" | "reset"
 }) {
   const resend = getResendClient()
   const from = getResendFromEmail()
   const actionUrl = buildPasswordSetupUrl(params.rawToken)
+  const isReset = params.mode === "reset"
 
   const response = await resend.emails.send({
     from,
     to: [params.email],
-    subject: "Defina sua senha de acesso ao LeadSpy",
+    subject: isReset
+      ? "Redefina sua senha de acesso ao LeadSpy"
+      : "Defina sua senha de acesso ao LeadSpy",
     react: createElement(PasswordSetupEmail, {
       actionUrl,
       customerName: params.name,
       expiresInHours: env.PASSWORD_SETUP_TOKEN_TTL_HOURS,
+      mode: params.mode,
     }),
   })
 

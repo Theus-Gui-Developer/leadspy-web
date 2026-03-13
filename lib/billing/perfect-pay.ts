@@ -216,7 +216,11 @@ export async function processPerfectPayWebhookItem(
 
   const planResults = payload.planCode
     ? await db
-        .select({ id: plans.id, durationMonths: plans.durationMonths })
+        .select({
+          id: plans.id,
+          durationMonths: plans.durationMonths,
+          features: plans.features,
+        })
         .from(plans)
         .where(
           and(
@@ -229,6 +233,9 @@ export async function processPerfectPayWebhookItem(
     : []
 
   const [plan] = planResults
+  const isLifetimePlan =
+    Boolean(plan?.features && typeof plan.features === "object" && plan.features.lifetime) ||
+    plan?.durationMonths === 0
 
   const [user] = await db
     .select({ id: users.id })
@@ -308,7 +315,9 @@ export async function processPerfectPayWebhookItem(
 
   const expiresAt =
     internalStatus === "active" && startsAt
-      ? addMonths(startsAt, plan.durationMonths)
+      ? isLifetimePlan
+        ? null
+        : addMonths(startsAt, plan.durationMonths)
       : (existingSubscription?.expiresAt ?? null)
 
   const canceledAt =

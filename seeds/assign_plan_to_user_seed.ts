@@ -24,7 +24,7 @@ async function main() {
     }
 
     const [plan] = await sql`
-      select id, name, duration_months
+      select id, name, duration_months, features
       from plans
       where provider = ${assignmentSeed.planProvider}
         and external_code = ${assignmentSeed.planExternalCode}
@@ -38,7 +38,10 @@ async function main() {
     }
 
     const startsAt = new Date(assignmentSeed.startsAt)
-    const expiresAt = addMonths(startsAt, plan.duration_months)
+    const isLifetimePlan =
+      Boolean(plan.features && typeof plan.features === "object" && plan.features.lifetime) ||
+      plan.duration_months === 0
+    const expiresAt = isLifetimePlan ? null : addMonths(startsAt, plan.duration_months)
 
     const [existingSubscription] = await sql`
       select id

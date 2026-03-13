@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { StatusBadge } from "@/components/ui/status_badge"
-import { Progress, ProgressTrack, ProgressIndicator } from "@/components/ui/progress"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Calendar01Icon, Clock01Icon, CrownIcon, ArrowRight01Icon } from "@hugeicons/core-free-icons"
 import Link from "next/link"
@@ -10,7 +9,7 @@ type SubscriptionSummaryCardProps = {
   subscription: {
     id: string
     status: "active" | "expired" | "cancelled" | "pending" | "refunded" | "chargeback"
-    expiresAt: Date
+    expiresAt: Date | null
     createdAt?: Date | null
   }
   plan: {
@@ -40,7 +39,7 @@ function formatDate(date: Date): string {
 
 function getProgressColor(
   status: string,
-  daysRemaining: number
+  daysRemaining: number | null
 ): string {
   if (status === "expired" || status === "cancelled" || status === "chargeback") {
     return "bg-red-500"
@@ -51,21 +50,28 @@ function getProgressColor(
   if (status === "pending") {
     return "bg-[#3c83f6]"
   }
-  if (daysRemaining <= 7) {
+  if (daysRemaining !== null && daysRemaining <= 7) {
     return "bg-amber-400"
   }
   return "bg-emerald-500"
 }
 
+function isLifetimePlan(plan: SubscriptionSummaryCardProps["plan"], expiresAt: Date | null) {
+  return plan.durationMonths === 0 || expiresAt === null
+}
+
 export function SubscriptionSummaryCard({ subscription, plan }: SubscriptionSummaryCardProps) {
-  const daysRemaining = getDaysRemaining(subscription.expiresAt)
-  const totalDays = getDurationDays(plan.durationMonths)
-  const progressValue = subscription.status === "active" || subscription.status === "pending"
-    ? Math.min(100, (daysRemaining / totalDays) * 100)
-    : 0
+  const lifetime = isLifetimePlan(plan, subscription.expiresAt)
+  const daysRemaining = subscription.expiresAt ? getDaysRemaining(subscription.expiresAt) : null
+  const totalDays = Math.max(getDurationDays(plan.durationMonths), 1)
+  const progressValue = lifetime
+    ? 100
+    : subscription.status === "active" || subscription.status === "pending"
+      ? Math.min(100, ((daysRemaining ?? 0) / totalDays) * 100)
+      : 0
   const progressColor = getProgressColor(subscription.status, daysRemaining)
 
-  const isUrgent = daysRemaining <= 7 && subscription.status === "active"
+  const isUrgent = !lifetime && (daysRemaining ?? 0) <= 7 && subscription.status === "active"
 
   return (
     <Card className={cn(
@@ -91,12 +97,12 @@ export function SubscriptionSummaryCard({ subscription, plan }: SubscriptionSumm
       <CardContent className="space-y-4 pt-3">
         {/* Barra de progresso */}
         <div className="space-y-1.5">
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>Dias restantes</span>
-            <span className={cn("font-medium tabular-nums", isUrgent && "text-amber-400")}>
-              {daysRemaining} dias
-            </span>
-          </div>
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <span>{lifetime ? "Acesso" : "Dias restantes"}</span>
+              <span className={cn("font-medium tabular-nums", isUrgent && "text-amber-400")}>
+                {lifetime ? "Vitalicio" : `${daysRemaining} dias`}
+              </span>
+            </div>
           <div className="h-1.5 w-full overflow-hidden rounded-full bg-foreground/10">
             <div
               className={cn("h-full rounded-full transition-all", progressColor)}
@@ -121,7 +127,7 @@ export function SubscriptionSummaryCard({ subscription, plan }: SubscriptionSumm
             <div>
               <p className="text-xs text-muted-foreground">Vencimento</p>
               <p className={cn("text-xs font-medium", isUrgent ? "text-amber-400" : "text-foreground")}>
-                {formatDate(subscription.expiresAt)}
+                {subscription.expiresAt ? formatDate(subscription.expiresAt) : "Vitalicio"}
               </p>
             </div>
           </div>

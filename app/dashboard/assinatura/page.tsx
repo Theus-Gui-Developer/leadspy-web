@@ -24,7 +24,7 @@ export default async function AssinaturaPage() {
   }
 
   const plan = resolvePlanFromId(subscription.planId)
-  const expiresAt = new Date(subscription.expiresAt)
+  const expiresAt = subscription.expiresAt ? new Date(subscription.expiresAt) : null
 
   return (
     <div className="animate-fade-in space-y-8">
@@ -36,11 +36,11 @@ export default async function AssinaturaPage() {
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Coluna principal — card da assinatura */}
         <div className="space-y-6 lg:col-span-2">
-          <SubscriptionCard
-            subscription={{
-              id: subscription.id,
-              status: subscription.status,
-              expiresAt,
+            <SubscriptionCard
+              subscription={{
+                id: subscription.id,
+                status: subscription.status,
+                expiresAt,
               createdAt: null,
             }}
             plan={plan}
