@@ -9,10 +9,16 @@ import {
   revokeAuthSessionByRefreshToken,
   setWebSessionCookies,
 } from "@/lib/auth/session"
+import { buildCorsHeaders, buildOptionsCorsResponse } from "@/lib/http/cors"
 
 export const runtime = "nodejs"
 
+export async function OPTIONS(request: Request) {
+  return buildOptionsCorsResponse(request)
+}
+
 export async function POST(request: Request) {
+  const corsHeaders = buildCorsHeaders(request)
   let bodyClient: "web" | "extension" = "web"
   let bodyRefreshToken: string | null = null
 
@@ -31,7 +37,7 @@ export async function POST(request: Request) {
         ok: false,
         message: "Payload JSON invalido.",
       },
-      { status: 400 },
+      { status: 400, headers: corsHeaders },
     )
   }
 
@@ -43,7 +49,7 @@ export async function POST(request: Request) {
         ok: false,
         message: "Refresh token nao informado.",
       },
-      { status: 401 },
+      { status: 401, headers: corsHeaders },
     )
   }
 
@@ -60,7 +66,7 @@ export async function POST(request: Request) {
         ok: false,
         message: "Sessao invalida ou expirada.",
       },
-      { status: 401 },
+      { status: 401, headers: corsHeaders },
     )
   }
 
@@ -76,7 +82,7 @@ export async function POST(request: Request) {
         ok: false,
         message: "Nenhuma assinatura ativa foi encontrada para esta conta.",
       },
-      { status: 403 },
+      { status: 403, headers: corsHeaders },
     )
   }
 
@@ -86,7 +92,7 @@ export async function POST(request: Request) {
         ok: false,
         message: "Usuario nao encontrado.",
       },
-      { status: 404 },
+      { status: 404, headers: corsHeaders },
     )
   }
 
@@ -117,6 +123,6 @@ export async function POST(request: Request) {
             },
       user,
     },
-    { status: 200 },
+    { status: 200, headers: corsHeaders },
   )
 }

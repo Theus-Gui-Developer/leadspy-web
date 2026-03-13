@@ -1,7 +1,7 @@
 import { addMonths, createSqlClient } from "./_shared"
 
 const assignmentSeed = {
-  userEmail: "theus.gui.developer@gmail.com",
+  userEmail: "denerbisposilva@gmail.com",
   planProvider: "internal",
   planExternalCode: "developer",
   status: "active",

@@ -4,10 +4,16 @@ import {
   buildAuthUserPayload,
   getAuthenticatedUserFromRequest,
 } from "@/lib/auth/session"
+import { buildCorsHeaders, buildOptionsCorsResponse } from "@/lib/http/cors"
 
 export const runtime = "nodejs"
 
+export async function OPTIONS(request: Request) {
+  return buildOptionsCorsResponse(request)
+}
+
 export async function GET(request: Request) {
+  const corsHeaders = buildCorsHeaders(request)
   const authenticatedUser = await getAuthenticatedUserFromRequest(request)
 
   if (!authenticatedUser) {
@@ -16,7 +22,7 @@ export async function GET(request: Request) {
         ok: false,
         message: "Nao autenticado.",
       },
-      { status: 401 },
+      { status: 401, headers: corsHeaders },
     )
   }
 
@@ -28,7 +34,7 @@ export async function GET(request: Request) {
         ok: false,
         message: "Usuario nao encontrado.",
       },
-      { status: 404 },
+      { status: 404, headers: corsHeaders },
     )
   }
 
@@ -43,6 +49,6 @@ export async function GET(request: Request) {
       },
       user,
     },
-    { status: 200 },
+    { status: 200, headers: corsHeaders },
   )
 }

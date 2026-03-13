@@ -7,10 +7,16 @@ import {
   revokeAuthSessionByAccessToken,
   revokeAuthSessionByRefreshToken,
 } from "@/lib/auth/session"
+import { buildCorsHeaders, buildOptionsCorsResponse } from "@/lib/http/cors"
 
 export const runtime = "nodejs"
 
+export async function OPTIONS(request: Request) {
+  return buildOptionsCorsResponse(request)
+}
+
 export async function POST(request: Request) {
+  const corsHeaders = buildCorsHeaders(request)
   const rawAccessToken = await getRawAccessTokenFromRequest(request)
   const rawRefreshToken = await getRawRefreshTokenFromRequest(request)
 
@@ -26,6 +32,6 @@ export async function POST(request: Request) {
     {
       ok: true,
     },
-    { status: 200 },
+    { status: 200, headers: corsHeaders },
   )
 }

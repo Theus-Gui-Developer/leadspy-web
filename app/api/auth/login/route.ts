@@ -12,13 +12,19 @@ import {
 } from "@/lib/auth/session"
 import { db } from "@/lib/db"
 import { users } from "@/lib/db/schema"
+import { buildCorsHeaders, buildOptionsCorsResponse } from "@/lib/http/cors"
 import { verifyPassword } from "@/lib/security/password"
 
 type LoginClient = "web" | "extension"
 
 export const runtime = "nodejs"
 
+export async function OPTIONS(request: Request) {
+  return buildOptionsCorsResponse(request)
+}
+
 export async function POST(request: Request) {
+  const corsHeaders = buildCorsHeaders(request)
   let payload: unknown
 
   try {
@@ -29,7 +35,7 @@ export async function POST(request: Request) {
         ok: false,
         message: "Payload JSON invalido.",
       },
-      { status: 400 },
+      { status: 400, headers: corsHeaders },
     )
   }
 
@@ -39,7 +45,7 @@ export async function POST(request: Request) {
         ok: false,
         message: "Payload invalido.",
       },
-      { status: 400 },
+      { status: 400, headers: corsHeaders },
     )
   }
 
@@ -51,7 +57,7 @@ export async function POST(request: Request) {
         ok: false,
         message: "Email e senha sao obrigatorios.",
       },
-      { status: 400 },
+      { status: 400, headers: corsHeaders },
     )
   }
 
@@ -66,7 +72,7 @@ export async function POST(request: Request) {
         ok: false,
         message: "installationId e obrigatorio para login da extensao.",
       },
-      { status: 400 },
+      { status: 400, headers: corsHeaders },
     )
   }
 
@@ -86,7 +92,7 @@ export async function POST(request: Request) {
         ok: false,
         message: "Credenciais invalidas.",
       },
-      { status: 401 },
+      { status: 401, headers: corsHeaders },
     )
   }
 
@@ -98,7 +104,7 @@ export async function POST(request: Request) {
         ok: false,
         message: "Nenhuma assinatura ativa foi encontrada para esta conta.",
       },
-      { status: 403 },
+      { status: 403, headers: corsHeaders },
     )
   }
 
@@ -125,7 +131,7 @@ export async function POST(request: Request) {
         ok: false,
         message: "Usuario nao encontrado apos autenticacao.",
       },
-      { status: 500 },
+      { status: 500, headers: corsHeaders },
     )
   }
 
@@ -156,6 +162,6 @@ export async function POST(request: Request) {
             },
       user: authUser,
     },
-    { status: 200 },
+    { status: 200, headers: corsHeaders },
   )
 }
