@@ -3,6 +3,7 @@
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant light (&:is(.light *));
 
 /* ============================================================
    LeadSpy Design System — CSS Custom Properties
@@ -115,6 +116,64 @@
   --sidebar-accent-foreground: oklch(0.97 0.005 255);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.6 0.2 264);
+}
+
+/* ============================================================
+   Light theme
+   ============================================================ */
+.light {
+  /* LeadSpy brand tokens */
+  --ls-bg: oklch(0.97 0.004 255);
+  --ls-surface: oklch(1 0 0);
+  --ls-navy: oklch(0.93 0.012 255);
+  --ls-primary: oklch(0.5 0.22 264);
+  --ls-primary-hover: oklch(0.44 0.24 264);
+  --ls-primary-glow: oklch(0.5 0.22 264 / 12%);
+  --ls-fg: oklch(0.12 0.015 255);
+  --ls-muted: oklch(0.48 0.03 255);
+  --ls-border: oklch(0 0 0 / 10%);
+  --ls-border-strong: oklch(0 0 0 / 16%);
+  --ls-success: oklch(0.52 0.18 142);
+  --ls-warning: oklch(0.55 0.17 65);
+  --ls-danger: oklch(0.52 0.22 27);
+  --ls-info: oklch(0.5 0.19 264);
+
+  /* Shadcn tokens */
+  --background: oklch(0.97 0.004 255);
+  --foreground: oklch(0.12 0.015 255);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.12 0.015 255);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.12 0.015 255);
+  --primary: oklch(0.5 0.22 264);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.93 0.012 255);
+  --secondary-foreground: oklch(0.12 0.015 255);
+  --muted: oklch(0.93 0.012 255);
+  --muted-foreground: oklch(0.48 0.03 255);
+  --accent: oklch(0.9 0.016 255);
+  --accent-foreground: oklch(0.12 0.015 255);
+  --destructive: oklch(0.52 0.22 27);
+  --border: oklch(0 0 0 / 10%);
+  --input: oklch(0 0 0 / 6%);
+  --ring: oklch(0.5 0.22 264);
+
+  /* Chart tokens */
+  --chart-1: oklch(0.5 0.22 264);
+  --chart-2: oklch(0.52 0.18 142);
+  --chart-3: oklch(0.55 0.17 65);
+  --chart-4: oklch(0.52 0.22 27);
+  --chart-5: oklch(0.48 0.04 255);
+
+  /* Sidebar tokens */
+  --sidebar: oklch(0.92 0.014 255);
+  --sidebar-foreground: oklch(0.12 0.015 255);
+  --sidebar-primary: oklch(0.5 0.22 264);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.87 0.016 255);
+  --sidebar-accent-foreground: oklch(0.12 0.015 255);
+  --sidebar-border: oklch(0 0 0 / 10%);
+  --sidebar-ring: oklch(0.5 0.22 264);
 }
 
 @theme inline {
@@ -284,6 +343,21 @@
   ::-webkit-scrollbar-thumb:hover {
     background: oklch(1 0 0 / 20%);
   }
+
+  /* Scrollbar — light theme */
+  .light ::-webkit-scrollbar-thumb {
+    background: oklch(0 0 0 / 14%);
+  }
+
+  .light ::-webkit-scrollbar-thumb:hover {
+    background: oklch(0 0 0 / 22%);
+  }
+
+  /* Selection — light theme */
+  .light ::selection {
+    background-color: oklch(0.5 0.22 264 / 20%);
+    color: oklch(0.12 0.015 255);
+  }
 }
 
 /* ============================================================
@@ -356,5 +430,43 @@
 
   .animate-spin-slow {
     animation: spin-slow 2s linear infinite;
+  }
+
+  /* ── Light theme overrides para utilities hardcoded ── */
+
+  .light .glass {
+    background: oklch(1 0 0 / 70%);
+    backdrop-filter: blur(12px) saturate(1.2);
+    -webkit-backdrop-filter: blur(12px) saturate(1.2);
+    border: 1px solid oklch(0 0 0 / 8%);
+  }
+
+  .light .glass-strong {
+    background: oklch(0.98 0.004 255 / 90%);
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    border: 1px solid oklch(0 0 0 / 12%);
+  }
+
+  .light .gradient-subtle {
+    background: linear-gradient(
+      180deg,
+      oklch(0.93 0.012 255) 0%,
+      oklch(0.91 0.016 255) 100%
+    );
+  }
+
+  .light .surface-raised {
+    background: oklch(1 0 0);
+    border: 1px solid oklch(0 0 0 / 10%);
+    box-shadow:
+      0 1px 3px oklch(0 0 0 / 8%),
+      0 4px 16px oklch(0 0 0 / 5%),
+      inset 0 1px 0 oklch(1 0 0 / 80%);
+  }
+
+  .light .border-glow {
+    border-color: oklch(0.5 0.22 264 / 40%);
+    box-shadow: 0 0 0 1px oklch(0.5 0.22 264 / 15%);
   }
 }

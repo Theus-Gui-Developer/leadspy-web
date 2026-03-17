@@ -12,6 +12,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { useSessionRefresh } from "@/hooks/use_session_refresh"
+import { cn } from "@/lib/utils"
 
 type AppShellUser = {
   id: string
@@ -71,14 +72,25 @@ function TopBar({
 export function AppShell({ children, user, accessTokenExpiresAt }: AppShellProps) {
   const pathname = usePathname()
   const pageTitle = getPageTitle(pathname)
+  const [collapsed, setCollapsed] = useState(false)
 
   useSessionRefresh(accessTokenExpiresAt)
 
   return (
     <div className="flex h-screen w-full overflow-hidden">
       {/* Sidebar — visível apenas em md+ */}
-      <aside className="hidden w-60 shrink-0 border-r border-border md:flex md:flex-col">
-        <AppSidebar user={user} />
+      <aside
+        className={cn(
+          "hidden shrink-0 border-r border-border md:flex md:flex-col",
+          "transition-[width] duration-200 ease-in-out",
+          collapsed ? "w-14" : "w-60",
+        )}
+      >
+        <AppSidebar
+          user={user}
+          collapsed={collapsed}
+          onToggleCollapse={() => setCollapsed((c) => !c)}
+        />
       </aside>
 
       {/* Área principal */}

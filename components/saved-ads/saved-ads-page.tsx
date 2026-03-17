@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react"
 import { toast } from "sonner"
 
 import { PageHeader } from "@/components/layout/page_header"
-import { LoadingState } from "@/components/states/loading_state"
+import { Skeleton } from "@/components/ui/skeleton"
 import { FolderSidebar } from "@/components/saved-ads/folder-sidebar"
 import { SavedAdsGrid } from "@/components/saved-ads/saved-ads-grid"
 import { SavedAdsFilters } from "@/components/saved-ads/saved-ads-filters"
@@ -273,7 +273,25 @@ export function SavedAdsPage() {
   )
 
   if (isLoading) {
-    return <LoadingState message="Carregando seus anúncios..." />
+    return (
+      <div className="space-y-6">
+        <div className="space-y-2">
+          <Skeleton className="h-7 w-48" />
+          <Skeleton className="h-4 w-72" />
+        </div>
+        <div className="flex flex-col gap-6 lg:flex-row">
+          <Skeleton className="h-64 w-full shrink-0 lg:w-60" />
+          <div className="flex-1 space-y-4">
+            <Skeleton className="h-10 w-full" />
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <Skeleton key={i} className="h-48 w-full rounded-lg" />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (

@@ -1,5 +1,6 @@
 import "server-only"
 
+import { cache } from "react"
 import { cookies, headers } from "next/headers"
 
 /**
@@ -34,8 +35,12 @@ export type MeResponse =
 /**
  * Chama GET /api/auth/me a partir de um Server Component,
  * encaminhando os cookies httpOnly da requisição atual.
+ *
+ * Envolto em React.cache para deduplicar chamadas dentro do mesmo
+ * request de renderização — layout + pages chamando getMe() resultam
+ * em apenas 1 fetch HTTP, não 2.
  */
-export async function getMe(): Promise<MeResponse> {
+export const getMe = cache(async (): Promise<MeResponse> => {
   const cookieStore = await cookies()
   const headerStore = await headers()
 
@@ -54,4 +59,4 @@ export async function getMe(): Promise<MeResponse> {
 
   const data = (await response.json()) as MeResponse
   return data
-}
+})

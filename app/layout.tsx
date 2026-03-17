@@ -83,7 +83,7 @@ export default function RootLayout({
     <html
       lang="pt-BR"
       suppressHydrationWarning
-      className={cn("dark antialiased", fontMono.variable, figtree.variable)}
+      className={cn("antialiased", fontMono.variable, figtree.variable)}
     >
       <body>
         <ThemeProvider>
