@@ -23,7 +23,7 @@ export function PlanFeaturesList({ className }: PlanFeaturesListProps) {
             <HugeiconsIcon
               icon={CheckmarkCircle01Icon}
               size={13}
-              className="text-emerald-400"
+              className="text-emerald-600 dark:text-emerald-400"
             />
           </div>
           <span className="text-sm text-foreground/80">{feature}</span>

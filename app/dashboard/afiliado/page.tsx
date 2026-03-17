@@ -60,20 +60,20 @@ const colorMap = {
   },
   emerald: {
     bg: "bg-emerald-500/10",
-    icon: "text-emerald-400",
-    highlight: "text-emerald-400",
+    icon: "text-emerald-500",
+    highlight: "text-emerald-600 dark:text-emerald-400",
     bar: "bg-emerald-500",
   },
   amber: {
     bg: "bg-amber-500/10",
-    icon: "text-amber-400",
-    highlight: "text-amber-400",
+    icon: "text-amber-500",
+    highlight: "text-amber-600 dark:text-amber-400",
     bar: "bg-amber-500",
   },
   violet: {
     bg: "bg-violet-500/10",
-    icon: "text-violet-400",
-    highlight: "text-violet-400",
+    icon: "text-violet-500",
+    highlight: "text-violet-600 dark:text-violet-400",
     bar: "bg-violet-500",
   },
 }
@@ -331,7 +331,7 @@ export default function AfilitadoPage() {
                 <HugeiconsIcon
                   icon={Tick02Icon}
                   size={12}
-                  className="text-emerald-400"
+                  className="text-emerald-500"
                 />
                 Sem compromisso · Gratuito
               </span>

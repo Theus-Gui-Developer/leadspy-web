@@ -40,19 +40,19 @@ function formatDate(date: Date): string {
 function getProgressColor(status: string, daysRemaining: number | null): string {
   if (status === "expired" || status === "chargeback") return "bg-red-500"
   if (status === "cancelled" || status === "refunded") return "bg-zinc-500"
-  if (status === "pending") return "bg-[#3c83f6]"
-  if (daysRemaining !== null && daysRemaining <= 7) return "bg-amber-400"
+  if (status === "pending") return "bg-primary"
+  if (daysRemaining !== null && daysRemaining <= 7) return "bg-amber-500"
   return "bg-emerald-500"
 }
 
 const statusMessages: Record<string, { message: string; color: string }> = {
   active: {
     message: "Sua assinatura está ativa. Aproveite todos os recursos do plano.",
-    color: "text-emerald-400",
+    color: "text-emerald-600 dark:text-emerald-400",
   },
   expired: {
     message: "Sua assinatura expirou. Renove para continuar usando o LeadSpy.",
-    color: "text-red-400",
+    color: "text-red-600 dark:text-red-400",
   },
   cancelled: {
     message: "Sua assinatura foi cancelada. Contate o suporte se precisar de ajuda.",
@@ -60,7 +60,7 @@ const statusMessages: Record<string, { message: string; color: string }> = {
   },
   pending: {
     message: "Aguardando confirmação do pagamento. Isso pode levar alguns minutos.",
-    color: "text-[#3c83f6]",
+    color: "text-primary",
   },
   refunded: {
     message: "Sua assinatura foi reembolsada.",
@@ -68,7 +68,7 @@ const statusMessages: Record<string, { message: string; color: string }> = {
   },
   chargeback: {
     message: "Foi identificado um chargeback. Por favor, contate o suporte.",
-    color: "text-red-400",
+    color: "text-red-600 dark:text-red-400",
   },
 }
 
@@ -96,8 +96,8 @@ export function SubscriptionCard({ subscription, plan }: SubscriptionCardProps) 
       <CardHeader className="border-b border-border/50 pb-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-[#3c83f6]/10">
-              <HugeiconsIcon icon={CrownIcon} size={20} className="text-[#3c83f6]" />
+            <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
+              <HugeiconsIcon icon={CrownIcon} size={20} className="text-primary" />
             </div>
             <div>
               <CardTitle className="text-base font-semibold">
@@ -135,7 +135,7 @@ export function SubscriptionCard({ subscription, plan }: SubscriptionCardProps) 
               <p className="text-sm font-medium text-foreground">Tempo restante</p>
               <span className={cn(
                 "text-sm font-semibold tabular-nums",
-                isUrgent ? "text-amber-400" : "text-foreground"
+                isUrgent ? "text-amber-600 dark:text-amber-400" : "text-foreground"
               )}>
                 {lifetime ? "Vitalicio" : `${daysRemaining} dias`}
               </span>
@@ -175,14 +175,14 @@ export function SubscriptionCard({ subscription, plan }: SubscriptionCardProps) 
               <HugeiconsIcon
                 icon={Clock01Icon}
                 size={15}
-                className={isUrgent ? "text-amber-400" : "text-muted-foreground"}
+              className={isUrgent ? "text-amber-500 dark:text-amber-400" : "text-muted-foreground"}
               />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Válido até</p>
               <p className={cn(
                 "mt-0.5 text-sm font-medium",
-                isUrgent ? "text-amber-400" : "text-foreground"
+              isUrgent ? "text-amber-600 dark:text-amber-400" : "text-foreground"
               )}>
                 {subscription.expiresAt ? formatDate(subscription.expiresAt) : "Vitalicio"}
               </p>

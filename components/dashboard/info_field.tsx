@@ -47,7 +47,7 @@ export function InfoField({ label, value, copyable = false, mono = false, classN
             className={cn(
               "shrink-0 rounded-md p-1 transition-colors",
               copied
-                ? "text-emerald-400"
+                ? "text-emerald-600 dark:text-emerald-400"
                 : "text-muted-foreground hover:bg-foreground/10 hover:text-foreground"
             )}
             aria-label={copied ? "Copiado!" : `Copiar ${label}`}

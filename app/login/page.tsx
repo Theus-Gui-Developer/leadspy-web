@@ -1,6 +1,7 @@
 import Image from "next/image"
 import { AuthLayout } from "@/components/auth/auth_layout"
 import { AuthCard } from "@/components/auth/auth_card"
+import { ThemeToggle } from "@/components/ui/theme_toggle"
 import { LoginForm } from "./login_form"
 
 export default function LoginPage() {
@@ -22,6 +23,7 @@ export default function LoginPage() {
           badge="LeadSpy Access"
           title="Bem-vindo de volta"
           subtitle="Entre com suas credenciais para acessar o dashboard."
+          action={<ThemeToggle />}
           className="w-full"
         >
           <LoginForm />

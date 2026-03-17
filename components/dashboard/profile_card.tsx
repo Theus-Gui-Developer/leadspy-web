@@ -26,7 +26,7 @@ function getRoleLabel(role: string): string {
 
 function getRoleBadgeClass(role: string): string {
   if (role === "admin") {
-    return "border-transparent bg-[#3c83f6]/15 text-[#3c83f6]"
+    return "border-transparent bg-primary/10 text-primary"
   }
   return "border-transparent bg-foreground/10 text-muted-foreground"
 }

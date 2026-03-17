@@ -48,7 +48,7 @@ function getProgressColor(
     return "bg-zinc-500"
   }
   if (status === "pending") {
-    return "bg-[#3c83f6]"
+    return "bg-primary"
   }
   if (daysRemaining !== null && daysRemaining <= 7) {
     return "bg-amber-400"
@@ -83,8 +83,8 @@ export function SubscriptionSummaryCard({ subscription, plan }: SubscriptionSumm
       <CardHeader className="pb-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="flex size-8 items-center justify-center rounded-lg bg-[#3c83f6]/10">
-              <HugeiconsIcon icon={CrownIcon} size={16} className="text-[#3c83f6]" />
+            <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10">
+              <HugeiconsIcon icon={CrownIcon} size={16} className="text-primary" />
             </div>
             <CardTitle className="text-sm font-medium">
               Plano {plan.name}
@@ -99,7 +99,7 @@ export function SubscriptionSummaryCard({ subscription, plan }: SubscriptionSumm
         <div className="space-y-1.5">
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span>{lifetime ? "Acesso" : "Dias restantes"}</span>
-              <span className={cn("font-medium tabular-nums", isUrgent && "text-amber-400")}>
+              <span className={cn("font-medium tabular-nums", isUrgent && "text-amber-600 dark:text-amber-400")}>
                 {lifetime ? "Vitalicio" : `${daysRemaining} dias`}
               </span>
             </div>
@@ -126,7 +126,7 @@ export function SubscriptionSummaryCard({ subscription, plan }: SubscriptionSumm
             <HugeiconsIcon icon={Clock01Icon} size={14} className="mt-0.5 shrink-0 text-muted-foreground" />
             <div>
               <p className="text-xs text-muted-foreground">Vencimento</p>
-              <p className={cn("text-xs font-medium", isUrgent ? "text-amber-400" : "text-foreground")}>
+              <p className={cn("text-xs font-medium", isUrgent ? "text-amber-600 dark:text-amber-400" : "text-foreground")}>
                 {subscription.expiresAt ? formatDate(subscription.expiresAt) : "Vitalicio"}
               </p>
             </div>
@@ -136,7 +136,7 @@ export function SubscriptionSummaryCard({ subscription, plan }: SubscriptionSumm
         {/* Link */}
         <Link
           href="/dashboard/assinatura"
-          className="inline-flex items-center gap-1 text-xs text-[#3c83f6] transition-opacity hover:opacity-80"
+          className="inline-flex items-center gap-1 text-xs text-primary transition-opacity hover:opacity-80"
         >
           Ver detalhes da assinatura
           <HugeiconsIcon icon={ArrowRight01Icon} size={12} />

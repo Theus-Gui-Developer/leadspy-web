@@ -7,6 +7,7 @@ type AuthCardProps = {
   title?: string
   subtitle?: string
   badge?: string
+  action?: ReactNode
   className?: string
 }
 
@@ -15,24 +16,24 @@ export function AuthCard({
   title,
   subtitle,
   badge,
+  action,
   className,
 }: AuthCardProps) {
   return (
     <div
       className={cn(
         "relative w-full max-w-md rounded-2xl",
-        // Borda sutil com glow no topo
-        "border border-white/[0.08]",
-        // Fundo com glassmorphism
-        "bg-[oklch(0.11_0.025_255/85%)] backdrop-blur-xl",
-        // Sombra profunda
-        "shadow-[0_32px_80px_oklch(0_0_0/50%),0_8px_32px_oklch(0_0_0/30%)]",
+        // Borda adaptada ao tema
+        "border border-border/50",
+        // Fundo com glassmorphism — usa --card que já troca por tema
+        "bg-card/90 backdrop-blur-xl",
+        // Sombra suave em light, profunda em dark
+        "shadow-[0_8px_32px_oklch(0_0_0/10%),0_2px_8px_oklch(0_0_0/6%)] dark:shadow-[0_32px_80px_oklch(0_0_0/50%),0_8px_32px_oklch(0_0_0/30%)]",
         className
       )}
       style={{
-        // Glow sutil na borda superior
         boxShadow:
-          "0 32px 80px oklch(0 0 0 / 50%), 0 8px 32px oklch(0 0 0 / 30%), inset 0 1px 0 oklch(1 0 0 / 8%)",
+          "var(--auth-card-shadow, 0 8px 32px oklch(0 0 0 / 10%), 0 2px 8px oklch(0 0 0 / 6%), inset 0 1px 0 oklch(1 0 0 / 5%))",
       }}
     >
       {/* Glow decorativo no topo do card */}
@@ -41,21 +42,29 @@ export function AuthCard({
         className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-full"
         style={{
           background:
-            "linear-gradient(90deg, transparent, oklch(0.60 0.20 264 / 50%), transparent)",
+            "linear-gradient(90deg, transparent, color-mix(in oklch, var(--primary) 50%, transparent), transparent)",
         }}
       />
 
       <div className="p-8">
-        {(badge || title || subtitle) && (
+        {(badge || title || subtitle || action) && (
           <div className="mb-8 space-y-2.5">
-            {badge && (
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-primary">
-                <span
-                  aria-hidden
-                  className="size-1.5 rounded-full bg-primary opacity-80"
-                />
-                {badge}
-              </span>
+            {/* Linha do badge com action no lado direito */}
+            {(badge || action) && (
+              <div className="flex items-center justify-between gap-3">
+                {badge ? (
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-primary">
+                    <span
+                      aria-hidden
+                      className="size-1.5 rounded-full bg-primary opacity-80"
+                    />
+                    {badge}
+                  </span>
+                ) : (
+                  <span />
+                )}
+                {action && <div className="-mr-1 shrink-0">{action}</div>}
+              </div>
             )}
             {title && (
               <h1 className="text-2xl font-semibold tracking-tight text-foreground">

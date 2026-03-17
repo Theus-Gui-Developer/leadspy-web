@@ -9,7 +9,7 @@ export const mockUser = {
   email: "matheus@leadspy.app",
   role: "admin" as const,
   avatarUrl: null as string | null,
-  createdAt: new Date("2025-01-01T00:00:00Z"),
+  createdAt: new Date("2026-01-01T00:00:00Z"),
 }
 
 export const mockSession = {
@@ -50,6 +50,6 @@ export const mockSubscription = {
     | "refunded"
     | "chargeback",
   expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 25), // 25 dias
-  createdAt: new Date("2025-06-01T00:00:00Z"),
+  createdAt: new Date("2026-06-01T00:00:00Z"),
   renewsAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 25),
 }

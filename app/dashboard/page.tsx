@@ -135,20 +135,20 @@ export default async function DashboardPage() {
 
       {/* Row 2 — CTA Extensão Chrome */}
       <section>
-        <Card className="overflow-hidden bg-gradient-to-br from-[#0d1321] to-[#151e32] ring-[#3c83f6]/20 transition-all duration-200 hover:shadow-[0_0_32px_-8px_rgba(60,131,246,0.2)] hover:ring-[#3c83f6]/30">
+        <Card className="overflow-hidden bg-gradient-to-br from-secondary to-card ring-primary/20 transition-all duration-200 hover:shadow-lg hover:ring-primary/30">
           <CardContent className="py-2">
             <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
               {/* Ícone decorativo */}
               <div className="relative shrink-0">
-                <div className="flex size-16 items-center justify-center rounded-2xl bg-[#3c83f6]/10">
+                <div className="flex size-16 items-center justify-center rounded-2xl bg-primary/10">
                   <HugeiconsIcon
                     icon={ChromeIcon}
                     size={32}
-                    className="text-[#3c83f6]"
+                    className="text-primary"
                   />
                 </div>
                 {/* Glow decorativo */}
-                <div className="absolute inset-0 -z-10 size-16 rounded-2xl bg-[#3c83f6] opacity-10 blur-xl" />
+                <div className="absolute inset-0 -z-10 size-16 rounded-2xl bg-primary opacity-10 blur-xl" />
               </div>
 
               {/* Texto */}
@@ -168,7 +168,7 @@ export default async function DashboardPage() {
                 <Link
                   href="/downloads/leadspy-v1.1.0-release.zip"
                   download
-                  className="relative inline-flex h-10 items-center justify-center gap-2 rounded-sm bg-[#3c83f6]/20 px-4 text-sm font-medium text-[#3c83f6] ring-1 ring-[#3c83f6]/30 transition-all hover:bg-[#3c83f6]/30"
+                  className="relative inline-flex h-10 items-center justify-center gap-2 rounded-sm bg-primary/20 px-4 text-sm font-medium text-primary ring-1 ring-primary/30 transition-all hover:bg-primary/30"
                 >
                   <HugeiconsIcon icon={Download01Icon} size={16} />
                   Baixar Extensao

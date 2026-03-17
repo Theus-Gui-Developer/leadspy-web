@@ -11,13 +11,19 @@ export function AffiliateBanner() {
         className="pointer-events-none absolute inset-0 opacity-[0.05]"
         style={{
           backgroundImage:
-            "radial-gradient(circle, oklch(0.6 0.2 264) 1px, transparent 1px)",
+            "radial-gradient(circle, var(--primary) 1px, transparent 1px)",
           backgroundSize: "28px 28px",
         }}
       />
 
       {/* Glow radial central */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,oklch(0.6_0.2_264_/_10%),transparent)]" />
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 60% 50% at 50% 0%, color-mix(in oklch, var(--primary) 10%, transparent), transparent)",
+        }}
+      />
 
       {/* Glow lateral direito */}
       <div className="pointer-events-none absolute top-0 right-0 size-96 translate-x-1/4 -translate-y-1/4 rounded-full bg-primary/5 blur-3xl" />

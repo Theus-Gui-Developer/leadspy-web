@@ -13,6 +13,8 @@ import {
 } from "@hugeicons/core-free-icons"
 
 import { AuthLayout } from "@/components/auth/auth_layout"
+import { AuthCard } from "@/components/auth/auth_card"
+import { ThemeToggle } from "@/components/ui/theme_toggle"
 import { PasswordSetupForm } from "./password-setup-form"
 
 // ─── Tipos ─────────────────────────────────────────────────────────────────────
@@ -291,56 +293,32 @@ export function PasswordSetupPageWrapper({ token, tokenState }: PageWrapperProps
         />
 
         {/* Card */}
-        <div
-          className="relative w-full rounded-2xl border border-white/[0.08] bg-[oklch(0.11_0.025_255/85%)] p-8 backdrop-blur-xl"
-          style={{
-            boxShadow:
-              "0 32px 80px oklch(0 0 0 / 50%), 0 8px 32px oklch(0 0 0 / 30%), inset 0 1px 0 oklch(1 0 0 / 8%)",
-          }}
-        >
-          {/* Linha de glow no topo */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-full"
-            style={{
-              background:
-                "linear-gradient(90deg, transparent, oklch(0.60 0.20 264 / 50%), transparent)",
-            }}
-          />
-
-          {success ? (
+        {success ? (
+          <AuthCard action={<ThemeToggle />} className="w-full">
             <SuccessState secondsLeft={secondsLeft} />
-          ) : status === "valid" ? (
-            <>
-              <div className="mb-8 space-y-2.5">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-primary">
-                  <span
-                    aria-hidden
-                    className="size-1.5 rounded-full bg-primary opacity-80"
-                  />
-                  LeadSpy Access
-                </span>
-                <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-                  Defina sua senha
-                </h1>
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                  Finalize a criação da sua conta para acessar o dashboard e
-                  concluir a ativação.
-                </p>
-              </div>
-              <PasswordSetupForm
-                token={token}
-                email={(tokenState as Extract<TokenState, { status: "valid" }>).email}
-                defaultName={
-                  (tokenState as Extract<TokenState, { status: "valid" }>).name ?? ""
-                }
-                onSuccess={() => setSuccess(true)}
-              />
-            </>
-          ) : (
-            invalidTokenContent[status as Exclude<TokenStatus, "valid">]
-          )}
-        </div>
+          </AuthCard>
+        ) : status === "valid" ? (
+          <AuthCard
+            badge="LeadSpy Access"
+            title="Defina sua senha"
+            subtitle="Finalize a criação da sua conta para acessar o dashboard e concluir a ativação."
+            action={<ThemeToggle />}
+            className="w-full"
+          >
+            <PasswordSetupForm
+              token={token}
+              email={(tokenState as Extract<TokenState, { status: "valid" }>).email}
+              defaultName={
+                (tokenState as Extract<TokenState, { status: "valid" }>).name ?? ""
+              }
+              onSuccess={() => setSuccess(true)}
+            />
+          </AuthCard>
+        ) : (
+          <AuthCard action={<ThemeToggle />} className="w-full">
+            {invalidTokenContent[status as Exclude<TokenStatus, "valid">]}
+          </AuthCard>
+        )}
       </div>
     </AuthLayout>
   )

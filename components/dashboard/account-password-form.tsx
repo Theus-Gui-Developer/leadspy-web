@@ -137,7 +137,7 @@ export function AccountPasswordForm({ email }: AccountPasswordFormProps) {
             type="button"
             onClick={handleForgotPassword}
             disabled={isSendingReset || isSaving}
-            className="text-xs font-medium text-[#3c83f6] transition-opacity hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50"
+            className="text-xs font-medium text-primary transition-opacity hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isSendingReset ? "Enviando email de recuperacao..." : "Esqueceu a senha? Enviar email de recuperacao"}
           </button>
