@@ -1,344 +1,189 @@
+import Link from "next/link"
+import Script from "next/script"
+
 import { PageHeader } from "@/components/layout/page_header"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { CommissionCalculator } from "@/components/dashboard/commission-calculator"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  MoneyBag01Icon,
-  PercentCircleIcon,
-  UserGroupIcon,
-  DollarReceiveIcon,
-  RocketIcon,
-  Share01Icon,
-  ChartBarIncreasingIcon,
-  DiamondIcon,
   FlashIcon,
   Tick02Icon,
-  MagicWand01Icon,
+  UserAddIcon,
+  Share08Icon,
+  LinkSquare02Icon,
 } from "@hugeicons/core-free-icons"
-
-const benefits = [
-  {
-    icon: PercentCircleIcon,
-    label: "Comissão",
-    highlight: "até 70%",
-    description:
-      "Uma das maiores comissões do mercado digital. Cada indicação sua rende.",
-    color: "blue" as const,
-  },
-  {
-    icon: DollarReceiveIcon,
-    label: "Recorrência",
-    highlight: "todo mês",
-    description:
-      "Comissão em cada renovação — não só na primeira venda. Renda passiva real.",
-    color: "emerald" as const,
-  },
-  {
-    icon: ChartBarIncreasingIcon,
-    label: "Conversão",
-    highlight: "altíssima",
-    description:
-      "O LeadSpy resolve uma dor concreta. O produto se vende praticamente sozinho.",
-    color: "amber" as const,
-  },
-  {
-    icon: UserGroupIcon,
-    label: "Suporte",
-    highlight: "dedicado",
-    description:
-      "Time de afiliados disponível para te ajudar a escalar suas indicações.",
-    color: "violet" as const,
-  },
-]
-
-const colorMap = {
-  blue: {
-    bg: "bg-primary/10",
-    icon: "text-primary",
-    highlight: "text-primary",
-    bar: "bg-primary",
-  },
-  emerald: {
-    bg: "bg-emerald-500/10",
-    icon: "text-emerald-500",
-    highlight: "text-emerald-600 dark:text-emerald-400",
-    bar: "bg-emerald-500",
-  },
-  amber: {
-    bg: "bg-amber-500/10",
-    icon: "text-amber-500",
-    highlight: "text-amber-600 dark:text-amber-400",
-    bar: "bg-amber-500",
-  },
-  violet: {
-    bg: "bg-violet-500/10",
-    icon: "text-violet-500",
-    highlight: "text-violet-600 dark:text-violet-400",
-    bar: "bg-violet-500",
-  },
-}
-
-const steps = [
-  {
-    icon: Share01Icon,
-    number: "01",
-    title: "Solicite seu acesso",
-    description:
-      "Entre na lista de espera. Nossa equipe irá entrar em contato com você assim que o programa abrir.",
-  },
-  {
-    icon: MagicWand01Icon,
-    number: "02",
-    title: "Receba seu link exclusivo",
-    description:
-      "Você ganha um link rastreável único com dashboard completo de conversões e comissões.",
-  },
-  {
-    icon: MoneyBag01Icon,
-    number: "03",
-    title: "Divulgue e lucre",
-    description:
-      "Compartilhe para sua audiência. A cada assinatura gerada, sua comissão é creditada automaticamente.",
-  },
-]
 
 export default function AfilitadoPage() {
   return (
-    <div className="animate-fade-in space-y-10">
+    <div className="animate-fade-in space-y-6">
       <PageHeader
-        title="Programa de Afiliados"
-        description="Monetize sua audiência indicando o LeadSpy. Comissões recorrentes e altíssimas."
+        title="Indique e ganhe"
+        description="Monetize sua audiência indicando o LeadSpy. Comissões de até 70% por venda."
       />
 
-      {/* ── HERO ── */}
-      <section>
-        <div className="relative overflow-hidden rounded-md border border-primary/20 bg-card">
-          {/* Malha de pontos decorativa */}
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.05]"
-            style={{
-              backgroundImage:
-                "radial-gradient(circle, oklch(0.6 0.2 264) 1px, transparent 1px)",
-              backgroundSize: "28px 28px",
-            }}
-          />
-
-          {/* Glow radial central */}
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,oklch(0.6_0.2_264_/_10%),transparent)]" />
-
-          {/* Glow lateral direito */}
-          <div className="pointer-events-none absolute top-0 right-0 size-96 translate-x-1/4 -translate-y-1/4 rounded-full bg-primary/5 blur-3xl" />
-
-          <div className="relative flex flex-col items-center gap-8 px-8 py-14 text-center lg:flex-row lg:items-center lg:gap-16 lg:text-left">
-            {/* Número gigante de comissão */}
-            <div className="shrink-0">
-              <div className="flex flex-col items-center gap-3 lg:items-start">
-                {/* Label acima */}
-                <span className="inline-flex items-center gap-1.5 rounded-sm border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold tracking-widest text-primary uppercase">
-                  <HugeiconsIcon icon={FlashIcon} size={11} />
-                  Comissão por venda
-                </span>
-
-                {/* O número */}
-                <span className="bg-gradient-to-br from-foreground via-primary/80 to-primary bg-clip-text pr-2 font-mono text-[96px] leading-[1.1] font-black tracking-tighter text-transparent lg:text-[112px]">
-                  70%
-                </span>
-              </div>
-              <p className="mt-3 text-sm font-medium text-muted-foreground">
-                + renovações recorrentes
-              </p>
-            </div>
-
-            {/* Separador vertical */}
-            <div className="hidden h-32 w-px bg-gradient-to-b from-transparent via-primary/20 to-transparent lg:block" />
-
-            {/* Copy */}
-            <div className="flex-1 space-y-5">
-              <div className="space-y-3">
-                <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                  Venda o LeadSpy e construa{" "}
-                  <span className="text-primary">renda recorrente</span>
-                </h2>
-                <p className="max-w-lg text-base text-muted-foreground">
-                  Um dos maiores programas de afiliados de ferramentas para
-                  anunciantes digitais. Indique, converta e receba — mês após
-                  mês.
-                </p>
-              </div>
-
-              <div className="flex flex-wrap items-center justify-center gap-3 lg:justify-start">
-                <Button
-                  disabled
-                  size="lg"
-                  className="gap-2 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  <HugeiconsIcon icon={RocketIcon} size={16} />
-                  Quero ser afiliado
-                </Button>
-                <span className="flex items-center gap-1.5 rounded-sm border border-border bg-secondary px-3 py-2 text-xs font-medium text-muted-foreground">
-                  <HugeiconsIcon
-                    icon={DiamondIcon}
-                    size={12}
-                    className="text-primary"
-                  />
-                  Programa em breve
-                </span>
-              </div>
-            </div>
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* ── COLUNA ESQUERDA: Vídeo + CTAs ── */}
+        <div className="flex flex-col gap-4">
+          {/* Vídeo VSL */}
+          <div className="overflow-hidden rounded-md border border-border/40 bg-black">
+            {/* @ts-expect-error – vturb-smartplayer is a custom element registered by the player script */}
+            <vturb-smartplayer
+              id="vid-69bb65cdd54d8d20f1ffe999"
+              style={{ display: "block", margin: "0 auto", width: "100%" }}
+            />
+            <Script
+              src="https://scripts.converteai.net/889b9fb5-4ff6-4d36-9bcd-f8fe563a9649/players/69bb65cdd54d8d20f1ffe999/v4/player.js"
+              strategy="afterInteractive"
+            />
           </div>
-        </div>
-      </section>
 
-      {/* ── BENEFÍCIOS ── */}
-      <section className="space-y-5">
-        <div className="flex items-center gap-3">
-          <h3 className="text-lg font-semibold text-foreground">
-            Por que se tornar afiliado?
-          </h3>
-          <div className="h-px flex-1 bg-border/50" />
-        </div>
+          {/* CTAs abaixo do vídeo */}
+          <div className="relative overflow-hidden rounded-md border border-primary/20 bg-card p-5">
+            <div className="pointer-events-none absolute top-0 right-0 size-40 -translate-y-1/2 translate-x-1/2 rounded-full bg-primary/8 blur-3xl" />
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {benefits.map((b) => {
-            const c = colorMap[b.color]
-            return (
-              <div
-                key={b.label}
-                className="group relative overflow-hidden rounded-md border border-border/60 bg-card p-5 transition-colors hover:border-border"
-              >
-                {/* Barra de cor no topo */}
-                <div
-                  className={`absolute inset-x-0 top-0 h-[2px] ${c.bar} opacity-50`}
-                />
+            <div className="relative flex flex-col gap-4">
+              <div className="flex items-center gap-2">
+                <HugeiconsIcon icon={FlashIcon} size={12} className="text-primary" />
+                <p className="text-xs font-semibold text-foreground">Comece aqui</p>
+              </div>
 
-                {/* Ícone */}
-                <div
-                  className={`mb-4 flex size-10 items-center justify-center rounded-sm ${c.bg}`}
-                >
-                  <HugeiconsIcon icon={b.icon} size={18} className={c.icon} />
+              {/* Dois passos lado a lado */}
+              <div className="grid gap-px bg-border/30 sm:grid-cols-2">
+                {/* Passo 1 */}
+                <div className="flex flex-col gap-3 bg-card py-0.5 pr-4">
+                  <div className="flex items-start gap-2.5">
+                    <span className="mt-px flex size-4 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[9px] font-bold text-primary">
+                      1
+                    </span>
+                    <div className="space-y-1">
+                      <p className="text-xs font-semibold text-foreground">Criar conta na PerfectPay</p>
+                      <p className="text-[11px] leading-relaxed text-muted-foreground">
+                        Crie sua conta gratuita para receber comissões.
+                      </p>
+                    </div>
+                  </div>
+                  <Link
+                    href="https://app.perfectpay.com.br/refer/REFPPU15CGKJ1E"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex h-8 w-full items-center justify-center gap-1.5 rounded-sm bg-primary/12 text-[11px] font-semibold text-primary ring-1 ring-primary/20 transition-all hover:bg-primary/20"
+                  >
+                    <HugeiconsIcon icon={UserAddIcon} size={12} />
+                    Criar conta
+                    <HugeiconsIcon icon={LinkSquare02Icon} size={10} className="opacity-50" />
+                  </Link>
                 </div>
 
-                {/* Conteúdo */}
-                <p className="mb-0.5 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
-                  {b.label}
-                </p>
-                <p className={`mb-2 text-xl font-bold ${c.highlight}`}>
-                  {b.highlight}
-                </p>
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                  {b.description}
-                </p>
-              </div>
-            )
-          })}
-        </div>
-      </section>
-
-      {/* ── COMO FUNCIONA ── */}
-      <section className="space-y-5">
-        <div className="flex items-center gap-3">
-          <h3 className="text-lg font-semibold text-foreground">
-            Como funciona
-          </h3>
-          <div className="h-px flex-1 bg-border/50" />
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-3">
-          {steps.map((step, i) => (
-            <div key={step.number} className="relative">
-              {/* Linha conectora (exceto último) */}
-              {i < steps.length - 1 && (
-                <div className="absolute top-9 right-0 hidden h-px w-1/2 translate-x-full bg-gradient-to-r from-primary/25 to-transparent sm:block" />
-              )}
-
-              <Card className="h-full transition-colors hover:border-border">
-                <CardContent className="flex flex-col gap-4 p-5">
-                  {/* Número + ícone */}
-                  <div className="flex items-center gap-3">
-                    <div className="flex size-9 items-center justify-center rounded-sm bg-primary/10 ring-1 ring-primary/20">
-                      <HugeiconsIcon
-                        icon={step.icon}
-                        size={16}
-                        className="text-primary"
-                      />
-                    </div>
-                    <span className="font-mono text-3xl leading-none font-black text-foreground/10">
-                      {step.number}
+                {/* Passo 2 */}
+                <div className="flex flex-col gap-3 bg-card py-0.5 pl-4">
+                  <div className="flex items-start gap-2.5">
+                    <span className="mt-px flex size-4 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[9px] font-bold text-primary">
+                      2
                     </span>
+                    <div className="space-y-1">
+                      <p className="text-xs font-semibold text-foreground">Afiliar-se ao LeadSpy</p>
+                      <p className="text-[11px] leading-relaxed text-muted-foreground">
+                        Obtenha seu link exclusivo rastreável.
+                      </p>
+                    </div>
                   </div>
-
-                  {/* Texto */}
-                  <div className="space-y-1.5">
-                    <p className="font-semibold text-foreground">
-                      {step.title}
-                    </p>
-                    <p className="text-sm leading-relaxed text-muted-foreground">
-                      {step.description}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── CTA FINAL ── */}
-      <section>
-        <div className="relative overflow-hidden rounded-md border border-primary/15 bg-card p-8">
-          {/* Brilho de fundo */}
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_80%_at_50%_50%,oklch(0.6_0.2_264_/_6%),transparent)]" />
-
-          <div className="relative flex flex-col items-center gap-6 text-center sm:flex-row sm:text-left">
-            {/* Ícone central */}
-            <div className="relative shrink-0">
-              <div className="flex size-14 items-center justify-center rounded-md bg-primary/10 ring-1 ring-primary/20">
-                <HugeiconsIcon
-                  icon={MoneyBag01Icon}
-                  size={26}
-                  className="text-primary"
-                />
+                  <Link
+                    href="https://app.perfectpay.com.br/afilie/PPPBED61"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex h-8 w-full items-center justify-center gap-1.5 rounded-sm border border-border/60 bg-transparent text-[11px] font-semibold text-foreground transition-all hover:border-primary/30 hover:bg-primary/6 hover:text-primary"
+                  >
+                    <HugeiconsIcon icon={Share08Icon} size={12} />
+                    Afiliar-se
+                    <HugeiconsIcon icon={LinkSquare02Icon} size={10} className="opacity-50" />
+                  </Link>
+                </div>
               </div>
-              <div className="absolute inset-0 -z-10 rounded-md bg-primary opacity-10 blur-2xl" />
-            </div>
 
-            {/* Texto */}
-            <div className="flex-1 space-y-1.5">
-              <p className="text-lg font-bold text-foreground">
-                Pronto para monetizar sua audiência?
+              <p className="flex items-center gap-1.5 text-[10px] text-muted-foreground/50">
+                <HugeiconsIcon icon={Tick02Icon} size={10} className="text-emerald-500" />
+                Gratuito · Comissões pagas via PerfectPay
               </p>
-              <p className="text-sm text-muted-foreground">
-                Entre na lista de espera e seja um dos primeiros afiliados do
-                LeadSpy com{" "}
-                <span className="font-semibold text-primary">
-                  até 70% de comissão recorrente
-                </span>
-                .
-              </p>
-            </div>
-
-            {/* Botão + resultado esperado */}
-            <div className="flex shrink-0 flex-col items-center gap-2">
-              <Button
-                disabled
-                size="lg"
-                className="gap-2 px-6 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                <HugeiconsIcon icon={RocketIcon} size={16} />
-                Entrar na lista de espera
-              </Button>
-              <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <HugeiconsIcon
-                  icon={Tick02Icon}
-                  size={12}
-                  className="text-emerald-500"
-                />
-                Sem compromisso · Gratuito
-              </span>
             </div>
           </div>
         </div>
-      </section>
+
+        {/* ── COLUNA DIREITA: Banner 70% + Calculadora ── */}
+        <div className="flex flex-col gap-6">
+          {/* Banner 70% */}
+          <div className="relative rounded-md border border-primary/20 bg-card">
+            {/* Dot grid */}
+            <div
+              className="pointer-events-none absolute inset-0 opacity-[0.04]"
+              style={{
+                backgroundImage: "radial-gradient(circle, oklch(0.6 0.2 264) 1px, transparent 1px)",
+                backgroundSize: "22px 22px",
+              }}
+            />
+            {/* Top radial glow */}
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_20%_0%,oklch(0.6_0.2_264_/_12%),transparent)]" />
+            {/* Corner glow */}
+            <div className="pointer-events-none absolute -top-12 -left-12 size-48 rounded-full bg-primary/10 blur-3xl" />
+
+            <div className="relative flex flex-col gap-5 p-6">
+              {/* Badge */}
+              <span className="inline-flex w-fit items-center gap-1.5 rounded-sm border border-primary/20 bg-primary/10 px-2.5 py-1 text-[10px] font-semibold tracking-widest text-primary uppercase">
+                <HugeiconsIcon icon={FlashIcon} size={10} />
+                Comissão por venda
+              </span>
+
+              {/* Número + descrição lado a lado */}
+              <div className="flex items-end gap-4">
+                <div className="pl-1 pr-6 py-3 -ml-1 -mr-6 -my-3">
+                  <p className="bg-gradient-to-br from-foreground via-primary/80 to-primary bg-clip-text font-mono text-[108px] leading-none font-black tracking-tighter text-transparent pr-2.5">
+                    70%
+                  </p>
+                </div>
+                <div className="mb-4">
+                  <p className="text-sm font-semibold text-foreground">de comissão</p>
+                  <p className="text-xs text-muted-foreground">em cada venda</p>
+                </div>
+              </div>
+
+              {/* Planos */}
+              <div className="grid grid-cols-3 divide-x divide-border/40 border-y border-border/40 py-3.5">
+                <div className="flex flex-col gap-0.5 pr-4">
+                  <p className="font-mono text-sm font-bold text-foreground">R$ 67,90</p>
+                  <p className="text-[10px] text-muted-foreground">Semestral</p>
+                </div>
+                <div className="flex flex-col gap-0.5 px-4">
+                  <p className="font-mono text-sm font-bold text-foreground">R$ 102,90</p>
+                  <p className="text-[10px] text-muted-foreground">Anual</p>
+                </div>
+                <div className="flex flex-col gap-0.5 pl-4">
+                  <p className="font-mono text-sm font-bold text-primary">R$ 172,90</p>
+                  <p className="text-[10px] text-muted-foreground">Vitalício</p>
+                </div>
+              </div>
+
+              {/* Copy */}
+              <div className="space-y-1">
+                <h2 className="text-sm font-bold text-foreground">
+                  Indique e <span className="text-primary">ganhe por cada venda</span>
+                </h2>
+                <p className="text-xs leading-relaxed text-muted-foreground">
+                  Seu link rastreável. Cada conversão gera comissão automática na PerfectPay.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Calculadora */}
+          <div className="rounded-md border border-border/60 bg-card p-6">
+            <div className="mb-5 space-y-1">
+              <h3 className="text-sm font-semibold text-foreground">Veja quanto você pode ganhar</h3>
+              <p className="text-xs text-muted-foreground">
+                Escolha a quantidade de vendas e visualize o potencial da sua comissão.
+              </p>
+            </div>
+            <CommissionCalculator />
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

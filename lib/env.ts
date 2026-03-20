@@ -33,6 +33,7 @@ export const env = {
   RESEND_API_KEY: getOptionalEnv("RESEND_API_KEY"),
   RESEND_FROM_EMAIL: getOptionalEnv("RESEND_FROM_EMAIL"),
   SESSION_SECRET: getRequiredEnv("SESSION_SECRET"),
+  FIRECRAWL_API_URL: getOptionalEnv("FIRECRAWL_API_URL"),
   ACCESS_TOKEN_COOKIE_NAME:
     getOptionalEnv("ACCESS_TOKEN_COOKIE_NAME") ?? "leadspy_access",
   REFRESH_TOKEN_COOKIE_NAME:

@@ -12,6 +12,8 @@ import {
   AdvertisimentIcon,
   ArrowLeftDoubleIcon,
   ArrowRightDoubleIcon,
+  FilterIcon,
+  Mortarboard01Icon,
 } from "@hugeicons/core-free-icons"
 
 import { cn } from "@/lib/utils"
@@ -37,8 +39,10 @@ type AppSidebarProps = {
 const navLinks = [
   { href: "/dashboard", label: "Dashboard", icon: Home01Icon },
   { href: "/dashboard/anuncios", label: "Meus Anúncios", icon: AdvertisimentIcon },
+  { href: "/dashboard/analise-funil-de-pagina", label: "Análise de funil", icon: FilterIcon },
+  { href: "/dashboard/tutoriais", label: "Tutoriais", icon: Mortarboard01Icon },
   { href: "/dashboard/assinatura", label: "Assinatura", icon: CrownIcon },
-  { href: "/dashboard/afiliado", label: "Venda como Afiliado", icon: MoneyBag01Icon },
+  { href: "/dashboard/afiliado", label: "Indique e ganhe", icon: MoneyBag01Icon },
   { href: "/dashboard/conta", label: "Minha Conta", icon: UserIcon },
 ]
 
@@ -57,16 +61,16 @@ function SidebarAvatar({ user }: { user: SidebarUser }) {
 
   return (
     <div className="relative size-8 shrink-0">
-      <div className="flex size-8 items-center justify-center overflow-hidden rounded-full bg-primary/10 ring-1 ring-primary/20">
+      <div className="flex size-8 items-center justify-center overflow-hidden rounded-full bg-sidebar-primary/10 ring-1 ring-sidebar-primary/20">
         {avatarUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={avatarUrl} alt={user.name} className="size-full rounded-full object-cover" />
         ) : (
-          <span className="text-xs font-medium text-primary">{initials}</span>
+          <span className="text-xs font-medium text-sidebar-primary">{initials}</span>
         )}
       </div>
       {/* Indicador online */}
-      <span className="absolute right-0 bottom-0 size-2 rounded-full border border-background bg-emerald-500" />
+      <span className="absolute right-0 bottom-0 size-2 rounded-full border border-sidebar bg-emerald-500" />
     </div>
   )
 }
@@ -75,7 +79,7 @@ export function AppSidebar({ user, onClose, collapsed = false, onToggleCollapse 
   const pathname = usePathname()
 
   return (
-    <div className="flex h-full flex-col overflow-hidden bg-secondary">
+    <div className="flex h-full flex-col overflow-hidden bg-sidebar">
       {/* Header */}
       {collapsed ? (
         /* Modo colapsado: apenas botão de expandir centralizado */
@@ -85,13 +89,13 @@ export function AppSidebar({ user, onClose, collapsed = false, onToggleCollapse 
             onClick={onToggleCollapse}
             aria-label="Expandir sidebar"
             title="Expandir sidebar"
-            className="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground"
+            className="flex size-8 items-center justify-center rounded-lg text-sidebar-foreground/60 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground"
           >
             <HugeiconsIcon icon={ArrowRightDoubleIcon} size={16} strokeWidth={1.5} />
           </button>
         </div>
       ) : (
-        /* Modo expandido: logo + ThemeToggle + botão de colapsar */
+        /* Modo expandido: logo + botão de colapsar */
         <div className="flex items-center gap-2 px-4 py-5">
           <Image
             src="/logo_extended.png"
@@ -101,14 +105,13 @@ export function AppSidebar({ user, onClose, collapsed = false, onToggleCollapse 
             className="h-8 w-auto flex-1 object-contain object-left"
             priority
           />
-          <ThemeToggle />
           {onToggleCollapse && (
             <button
               type="button"
               onClick={onToggleCollapse}
               aria-label="Colapsar sidebar"
               title="Colapsar sidebar"
-              className="flex size-8 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground"
+              className="flex size-8 shrink-0 items-center justify-center rounded-lg text-sidebar-foreground/60 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground"
             >
               <HugeiconsIcon icon={ArrowLeftDoubleIcon} size={16} strokeWidth={1.5} />
             </button>
@@ -116,7 +119,7 @@ export function AppSidebar({ user, onClose, collapsed = false, onToggleCollapse 
         </div>
       )}
 
-      <Separator />
+      <Separator className="bg-white/8" />
 
       {/* Navegação */}
       <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto py-4" aria-label="Navegação principal">
@@ -139,8 +142,8 @@ export function AppSidebar({ user, onClose, collapsed = false, onToggleCollapse 
                   className={cn(
                     "flex size-9 items-center justify-center rounded-md transition-all",
                     isActive
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
+                      ? "bg-sidebar-primary/10 text-sidebar-primary"
+                      : "text-sidebar-foreground/50 hover:bg-sidebar-accent hover:text-sidebar-foreground",
                   )}
                 >
                   <HugeiconsIcon
@@ -170,8 +173,8 @@ export function AppSidebar({ user, onClose, collapsed = false, onToggleCollapse 
                   className={cn(
                     "group flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-all",
                     isActive
-                      ? "border-l-2 border-primary bg-primary/10 pl-[10px] text-foreground"
-                      : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
+                      ? "border-l-2 border-sidebar-primary bg-sidebar-primary/10 pl-2.5 text-sidebar-foreground"
+                      : "text-sidebar-foreground/50 hover:bg-sidebar-accent hover:text-sidebar-foreground",
                   )}
                 >
                   <HugeiconsIcon
@@ -181,8 +184,8 @@ export function AppSidebar({ user, onClose, collapsed = false, onToggleCollapse 
                     className={cn(
                       "shrink-0 transition-colors",
                       isActive
-                        ? "text-primary"
-                        : "text-muted-foreground group-hover:text-foreground",
+                        ? "text-sidebar-primary"
+                        : "text-sidebar-foreground/50 group-hover:text-sidebar-foreground",
                     )}
                   />
                   {link.label}
@@ -193,26 +196,32 @@ export function AppSidebar({ user, onClose, collapsed = false, onToggleCollapse 
         )}
       </nav>
 
-      <Separator />
+      <Separator className="bg-white/8" />
 
-      {/* Footer: usuário + ações */}
+      {/* Footer: theme toggle + usuário + ações */}
       {collapsed ? (
-        /* Footer colapsado: avatar + ThemeToggle + logout empilhados e centralizados */
-        <div className="flex flex-col items-center gap-1 px-2 py-4">
+        /* Footer colapsado */
+        <div className="flex flex-col items-center gap-2 px-2 py-4">
           <SidebarAvatar user={user} />
           <ThemeToggle />
           <LogoutButton />
         </div>
       ) : (
-        /* Footer expandido: avatar + nome/email + ThemeToggle + logout */
-        <div className="px-3 py-4">
+        /* Footer expandido */
+        <div className="px-3 py-3 space-y-1">
+          {/* Theme toggle row */}
+          <div className="flex items-center justify-between rounded-md px-2 py-1.5">
+            <span className="text-xs text-sidebar-foreground/50">Tema</span>
+            <ThemeToggle />
+          </div>
+          {/* User info + logout */}
           <div className="flex items-center gap-3 rounded-md px-2 py-2">
             <SidebarAvatar user={user} />
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-foreground">
+              <p className="truncate text-sm font-medium text-sidebar-foreground">
                 {user.name}
               </p>
-              <p className="truncate text-xs text-muted-foreground">
+              <p className="truncate text-xs text-sidebar-foreground/50">
                 {user.email}
               </p>
             </div>

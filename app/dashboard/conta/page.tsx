@@ -3,6 +3,7 @@ import Link from "next/link"
 
 import { getMe } from "@/lib/api/get_me"
 import { resolvePlanFromId } from "@/lib/api/plan_resolver"
+import { getDaysRemaining } from "@/lib/utils"
 import { AccountPasswordForm } from "@/components/dashboard/account-password-form"
 import { AccountProfileForm } from "@/components/dashboard/account-profile-form"
 import { PageHeader } from "@/components/layout/page_header"
@@ -25,6 +26,7 @@ function formatDate(date: Date): string {
   }).format(date)
 }
 
+
 export default async function ContaPage() {
   const result = await getMe()
 
@@ -41,6 +43,8 @@ export default async function ContaPage() {
 
   const plan = resolvePlanFromId(subscription.planId)
   const expiresAt = subscription.expiresAt ? new Date(subscription.expiresAt) : null
+  const isLifetime = subscription.expiresAt === null
+  const daysRemaining = expiresAt ? getDaysRemaining(expiresAt) : null
 
   return (
     <div className="animate-fade-in space-y-8">
@@ -150,7 +154,15 @@ export default async function ContaPage() {
                     Válido até
                   </p>
                   <p className="text-sm font-medium text-foreground">
-                    {expiresAt ? formatDate(expiresAt) : "Vitalicio"}
+                    {expiresAt ? formatDate(expiresAt) : "Vitalício"}
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    Dias restantes
+                  </p>
+                  <p className="text-sm font-medium text-foreground">
+                    {isLifetime ? "Vitalício" : `${daysRemaining} dias`}
                   </p>
                 </div>
               </div>

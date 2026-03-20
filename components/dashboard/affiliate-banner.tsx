@@ -56,7 +56,7 @@ export function AffiliateBanner() {
           <div className="space-y-3">
             <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
               Indique o LeadSpy e receba comissões de até{" "}
-              <span className="text-primary">R$ 207,90 por venda</span>
+              <span className="text-primary whitespace-nowrap">R$ 172,90 por venda</span>
             </h2>
             <p className="max-w-lg text-base text-muted-foreground">
               Monetize sua audiência com uma oferta de alta conversão e comissão

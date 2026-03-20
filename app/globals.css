@@ -12,9 +12,9 @@
 
 :root {
   /* LeadSpy brand tokens */
-  --ls-bg: oklch(0.08 0.018 255);
-  --ls-surface: oklch(0.12 0.028 255);
-  --ls-navy: oklch(0.17 0.042 255);
+  --ls-bg: oklch(0.10 0.026 255);
+  --ls-surface: oklch(0.14 0.032 255);
+  --ls-navy: oklch(0.18 0.044 255);
   --ls-primary: oklch(0.6 0.2 264);
   --ls-primary-hover: oklch(0.54 0.22 264);
   --ls-primary-glow: oklch(0.6 0.2 264 / 15%);
@@ -28,19 +28,19 @@
   --ls-info: oklch(0.6 0.19 264);
 
   /* Shadcn tokens mapeados para LeadSpy */
-  --background: oklch(0.08 0.018 255);
+  --background: oklch(0.10 0.026 255);
   --foreground: oklch(0.97 0.005 255);
-  --card: oklch(0.12 0.028 255);
+  --card: oklch(0.14 0.032 255);
   --card-foreground: oklch(0.97 0.005 255);
-  --popover: oklch(0.12 0.028 255);
+  --popover: oklch(0.14 0.032 255);
   --popover-foreground: oklch(0.97 0.005 255);
   --primary: oklch(0.6 0.2 264);
   --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.17 0.042 255);
+  --secondary: oklch(0.18 0.044 255);
   --secondary-foreground: oklch(0.97 0.005 255);
-  --muted: oklch(0.17 0.042 255);
+  --muted: oklch(0.18 0.044 255);
   --muted-foreground: oklch(0.58 0.04 255);
-  --accent: oklch(0.2 0.048 255);
+  --accent: oklch(0.21 0.05 255);
   --accent-foreground: oklch(0.97 0.005 255);
   --destructive: oklch(0.63 0.22 27);
   --border: oklch(1 0 0 / 10%);
@@ -56,7 +56,7 @@
   --chart-5: oklch(0.56 0.04 255);
 
   /* Sidebar tokens → ls-navy */
-  --sidebar: oklch(0.11 0.025 255);
+  --sidebar: oklch(0.13 0.03 255);
   --sidebar-foreground: oklch(0.97 0.005 255);
   --sidebar-primary: oklch(0.6 0.2 264);
   --sidebar-primary-foreground: oklch(1 0 0);
@@ -68,9 +68,9 @@
 
 /* Dark é a base — tokens idênticos ao :root (dark forçado) */
 .dark {
-  --ls-bg: oklch(0.08 0.018 255);
-  --ls-surface: oklch(0.12 0.028 255);
-  --ls-navy: oklch(0.17 0.042 255);
+  --ls-bg: oklch(0.10 0.026 255);
+  --ls-surface: oklch(0.14 0.032 255);
+  --ls-navy: oklch(0.18 0.044 255);
   --ls-primary: oklch(0.6 0.2 264);
   --ls-primary-hover: oklch(0.54 0.22 264);
   --ls-primary-glow: oklch(0.6 0.2 264 / 15%);
@@ -83,19 +83,19 @@
   --ls-danger: oklch(0.63 0.22 27);
   --ls-info: oklch(0.6 0.19 264);
 
-  --background: oklch(0.08 0.018 255);
+  --background: oklch(0.10 0.026 255);
   --foreground: oklch(0.97 0.005 255);
-  --card: oklch(0.12 0.028 255);
+  --card: oklch(0.14 0.032 255);
   --card-foreground: oklch(0.97 0.005 255);
-  --popover: oklch(0.12 0.028 255);
+  --popover: oklch(0.14 0.032 255);
   --popover-foreground: oklch(0.97 0.005 255);
   --primary: oklch(0.6 0.2 264);
   --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.17 0.042 255);
+  --secondary: oklch(0.18 0.044 255);
   --secondary-foreground: oklch(0.97 0.005 255);
-  --muted: oklch(0.17 0.042 255);
+  --muted: oklch(0.18 0.044 255);
   --muted-foreground: oklch(0.58 0.04 255);
-  --accent: oklch(0.2 0.048 255);
+  --accent: oklch(0.21 0.05 255);
   --accent-foreground: oklch(0.97 0.005 255);
   --destructive: oklch(0.63 0.22 27);
   --border: oklch(1 0 0 / 10%);
@@ -108,7 +108,7 @@
   --chart-4: oklch(0.63 0.22 27);
   --chart-5: oklch(0.56 0.04 255);
 
-  --sidebar: oklch(0.11 0.025 255);
+  --sidebar: oklch(0.13 0.03 255);
   --sidebar-foreground: oklch(0.97 0.005 255);
   --sidebar-primary: oklch(0.6 0.2 264);
   --sidebar-primary-foreground: oklch(1 0 0);
@@ -165,15 +165,15 @@
   --chart-4: oklch(0.52 0.22 27);
   --chart-5: oklch(0.48 0.04 255);
 
-  /* Sidebar tokens */
-  --sidebar: oklch(0.92 0.014 255);
-  --sidebar-foreground: oklch(0.12 0.015 255);
-  --sidebar-primary: oklch(0.5 0.22 264);
+  /* Sidebar tokens — sempre dark independente do tema */
+  --sidebar: oklch(0.13 0.03 255);
+  --sidebar-foreground: oklch(0.97 0.005 255);
+  --sidebar-primary: oklch(0.6 0.2 264);
   --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.87 0.016 255);
-  --sidebar-accent-foreground: oklch(0.12 0.015 255);
-  --sidebar-border: oklch(0 0 0 / 10%);
-  --sidebar-ring: oklch(0.5 0.22 264);
+  --sidebar-accent: oklch(0.18 0.044 255);
+  --sidebar-accent-foreground: oklch(0.97 0.005 255);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.6 0.2 264);
 }
 
 @theme inline {
@@ -367,7 +367,7 @@
 @layer utilities {
   /* Glassmorphism sutil */
   .glass {
-    background: oklch(0.11 0.025 255 / 60%);
+    background: oklch(0.13 0.03 255 / 60%);
     backdrop-filter: blur(12px) saturate(1.2);
     -webkit-backdrop-filter: blur(12px) saturate(1.2);
     border: 1px solid oklch(1 0 0 / 7%);
@@ -375,7 +375,7 @@
 
   /* Glassmorphism mais acentuado */
   .glass-strong {
-    background: oklch(0.16 0.04 255 / 80%);
+    background: oklch(0.18 0.044 255 / 80%);
     backdrop-filter: blur(20px) saturate(1.4);
     -webkit-backdrop-filter: blur(20px) saturate(1.4);
     border: 1px solid oklch(1 0 0 / 12%);
@@ -394,14 +394,14 @@
   .gradient-subtle {
     background: linear-gradient(
       180deg,
-      oklch(0.11 0.025 255) 0%,
-      oklch(0.09 0.02 255) 100%
+      oklch(0.13 0.03 255) 0%,
+      oklch(0.11 0.026 255) 100%
     );
   }
 
   /* Superfície elevada com borda sutil */
   .surface-raised {
-    background: oklch(0.13 0.03 255);
+    background: oklch(0.15 0.034 255);
     border: 1px solid oklch(1 0 0 / 10%);
     box-shadow:
       0 1px 3px oklch(0 0 0 / 30%),
