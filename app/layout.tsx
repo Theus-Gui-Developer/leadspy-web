@@ -15,29 +15,29 @@ const fontMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "LeadSpy",
-    template: "%s — LeadSpy",
+    default: "AdSniper",
+    template: "%s — AdSniper",
   },
   description:
     "Analise anúncios da concorrência, descubra o que está convertendo e escale suas campanhas com inteligência.",
-  applicationName: "LeadSpy",
+  applicationName: "AdSniper",
   keywords: [
     "espionar anúncios",
     "biblioteca de anúncios meta",
     "análise de concorrentes",
     "ferramentas para anunciantes",
     "facebook ads spy",
-    "leadspy",
+    "adsniper",
   ],
-  authors: [{ name: "LeadSpy" }],
-  creator: "LeadSpy",
-  metadataBase: new URL("https://app.leadspy.com.br"),
+  authors: [{ name: "AdSniper" }],
+  creator: "AdSniper",
+  metadataBase: new URL("https://app.adsniper.com.br"),
   openGraph: {
     type: "website",
     locale: "pt_BR",
-    url: "https://app.leadspy.com.br",
-    siteName: "LeadSpy",
-    title: "LeadSpy — Espione os anúncios da concorrência",
+    url: "https://app.adsniper.com.br",
+    siteName: "AdSniper",
+    title: "AdSniper — Espione os anúncios da concorrência",
     description:
       "Analise anúncios da concorrência, descubra o que está convertendo e escale suas campanhas com inteligência.",
     images: [
@@ -45,13 +45,13 @@ export const metadata: Metadata = {
         url: "/android-chrome-512x512.png",
         width: 512,
         height: 512,
-        alt: "LeadSpy",
+        alt: "AdSniper",
       },
     ],
   },
   twitter: {
     card: "summary",
-    title: "LeadSpy — Espione os anúncios da concorrência",
+    title: "AdSniper — Espione os anúncios da concorrência",
     description:
       "Analise anúncios da concorrência, descubra o que está convertendo e escale suas campanhas com inteligência.",
     images: ["/android-chrome-512x512.png"],

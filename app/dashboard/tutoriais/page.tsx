@@ -30,7 +30,7 @@ const lessons: Lesson[] = [
     duration: "5:32",
     available: true,
     description:
-      "Aprenda passo a passo como instalar o LeadSpy no Chrome e configurar a extensão para começar a espiar os melhores anúncios do mercado.",
+      "Aprenda passo a passo como instalar o AdSniper no Chrome e configurar a extensão para começar a espiar os melhores anúncios do mercado.",
     vtubePlayerId: "vid-69bb65d1b1f8e9f7f4eda04a",
     vtubeScriptSrc:
       "https://scripts.converteai.net/889b9fb5-4ff6-4d36-9bcd-f8fe563a9649/players/69bb65d1b1f8e9f7f4eda04a/v4/player.js",
@@ -103,7 +103,7 @@ export default function TutoriaisPage() {
     <div className="animate-fade-in space-y-6">
       <PageHeader
         title="Tutoriais"
-        description="Aprenda a usar o LeadSpy e maximize seus resultados."
+        description="Aprenda a usar o AdSniper e maximize seus resultados."
       />
 
       <div className="grid gap-6 lg:grid-cols-[3fr_2fr] xl:grid-cols-[5fr_3fr]">

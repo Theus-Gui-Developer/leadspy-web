@@ -15,7 +15,7 @@ export default async function LoginPage() {
         {/* Logo */}
         <Image
           src="/logo_extended.png"
-          alt="LeadSpy"
+          alt="AdSniper"
           width={140}
           height={36}
           className="h-9 w-auto object-contain"
@@ -24,7 +24,7 @@ export default async function LoginPage() {
 
         {/* Card do formulário */}
         <AuthCard
-          badge="LeadSpy Access"
+          badge="AdSniper Access"
           title="Bem-vindo de volta"
           subtitle="Entre com suas credenciais para acessar o dashboard."
           action={<ThemeToggle />}

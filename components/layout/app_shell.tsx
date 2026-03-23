@@ -37,7 +37,7 @@ const pageTitles: Record<string, string> = {
 }
 
 function getPageTitle(pathname: string): string {
-  return pageTitles[pathname] ?? "LeadSpy"
+  return pageTitles[pathname] ?? "AdSniper"
 }
 
 

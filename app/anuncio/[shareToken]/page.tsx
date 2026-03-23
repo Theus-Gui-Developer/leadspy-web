@@ -27,10 +27,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title,
-    description: ad.adText?.slice(0, 160) ?? "Veja este anúncio compartilhado no LeadSpy.",
+    description: ad.adText?.slice(0, 160) ?? "Veja este anúncio compartilhado no AdSniper.",
     openGraph: {
-      title: `${title} — LeadSpy`,
-      description: ad.adText?.slice(0, 160) ?? "Veja este anúncio compartilhado no LeadSpy.",
+      title: `${title} — AdSniper`,
+      description: ad.adText?.slice(0, 160) ?? "Veja este anúncio compartilhado no AdSniper.",
       ...(ad.thumbnailUrl ? { images: [{ url: ad.thumbnailUrl }] } : {}),
     },
   }

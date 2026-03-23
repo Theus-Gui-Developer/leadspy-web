@@ -18,6 +18,10 @@ function isAllowedOrigin(origin: string | null): origin is string {
     return true
   }
 
+  if (origin === "https://app.adsniper.com.br") {
+    return true
+  }
+
   return false
 }
 

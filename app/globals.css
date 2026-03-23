@@ -6,12 +6,12 @@
 @custom-variant light (&:is(.light *));
 
 /* ============================================================
-   LeadSpy Design System — CSS Custom Properties
+    Design System — CSS Custom Properties
    Dark theme forçado como base
    ============================================================ */
 
 :root {
-  /* LeadSpy brand tokens */
+  /* AdSniper brand tokens */
   --ls-bg: oklch(0.10 0.026 255);
   --ls-surface: oklch(0.14 0.032 255);
   --ls-navy: oklch(0.18 0.044 255);
@@ -27,7 +27,7 @@
   --ls-danger: oklch(0.63 0.22 27);
   --ls-info: oklch(0.6 0.19 264);
 
-  /* Shadcn tokens mapeados para LeadSpy */
+  /* Shadcn tokens mapeados para AdSniper */
   --background: oklch(0.10 0.026 255);
   --foreground: oklch(0.97 0.005 255);
   --card: oklch(0.14 0.032 255);
@@ -122,7 +122,7 @@
    Light theme
    ============================================================ */
 .light {
-  /* LeadSpy brand tokens */
+  /* AdSniper brand tokens */
   --ls-bg: oklch(0.97 0.004 255);
   --ls-surface: oklch(1 0 0);
   --ls-navy: oklch(0.93 0.012 255);
@@ -218,7 +218,7 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  /* LeadSpy brand colors disponíveis via Tailwind */
+  /* AdSniper brand colors disponíveis via Tailwind */
   --color-ls-bg: var(--ls-bg);
   --color-ls-surface: var(--ls-surface);
   --color-ls-navy: var(--ls-navy);
@@ -361,7 +361,7 @@
 }
 
 /* ============================================================
-   Utility classes LeadSpy
+   Utility classes AdSniper
    ============================================================ */
 
 @layer utilities {

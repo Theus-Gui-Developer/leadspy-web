@@ -29,7 +29,7 @@ export function FunnelEmptyState() {
           Cole a URL de destino de um anúncio
         </p>
         <p className="text-sm text-muted-foreground">
-          O LeadSpy vai rastrear o funil completo, identificar a plataforma,
+          O AdSniper vai rastrear o funil completo, identificar a plataforma,
           o tipo de página e os sinais instalados na página.
         </p>
       </div>

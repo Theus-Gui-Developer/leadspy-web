@@ -51,7 +51,7 @@ const statusMessages: Record<string, { message: string; color: string }> = {
     color: "text-emerald-600 dark:text-emerald-400",
   },
   expired: {
-    message: "Sua assinatura expirou. Renove para continuar usando o LeadSpy.",
+    message: "Sua assinatura expirou. Renove para continuar usando o AdSniper.",
     color: "text-red-600 dark:text-red-400",
   },
   cancelled: {

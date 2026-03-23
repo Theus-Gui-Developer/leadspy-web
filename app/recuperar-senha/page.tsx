@@ -12,7 +12,7 @@ export default function RecuperarSenhaPage() {
       <div className="mx-auto flex w-full max-w-md flex-col items-center gap-8 animate-slide-up">
         <Image
           src="/logo_extended.png"
-          alt="LeadSpy"
+          alt="AdSniper"
           width={140}
           height={36}
           className="h-9 w-auto object-contain"
@@ -20,7 +20,7 @@ export default function RecuperarSenhaPage() {
         />
 
         <AuthCard
-          badge="LeadSpy Access"
+          badge="AdSniper Access"
           title="Recuperar senha"
           subtitle="Informe o email principal da sua conta para receber um link seguro de redefinição."
           action={<ThemeToggle />}

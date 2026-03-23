@@ -220,7 +220,7 @@ function SuccessState({ secondsLeft }: { secondsLeft: number }) {
           Senha definida com sucesso!
         </h2>
         <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
-          Sua conta LeadSpy está pronta. Acesse o dashboard usando seu email e a
+          Sua conta AdSniper está pronta. Acesse o dashboard usando seu email e a
           senha que você acabou de criar.
         </p>
       </div>
@@ -233,7 +233,7 @@ function SuccessState({ secondsLeft }: { secondsLeft: number }) {
           boxShadow: "0 4px 20px oklch(0.60 0.20 264 / 25%)",
         }}
       >
-        Acessar o LeadSpy
+        Acessar o AdSniper
       </a>
 
       {/* Contador de redirecionamento automático */}
@@ -285,7 +285,7 @@ export function PasswordSetupPageWrapper({ token, tokenState }: PageWrapperProps
         {/* Branding */}
         <Image
           src="/logo_extended.png"
-          alt="LeadSpy"
+          alt="AdSniper"
           width={140}
           height={36}
           className="h-9 w-auto object-contain"
@@ -299,7 +299,7 @@ export function PasswordSetupPageWrapper({ token, tokenState }: PageWrapperProps
           </AuthCard>
         ) : status === "valid" ? (
           <AuthCard
-            badge="LeadSpy Access"
+            badge="AdSniper Access"
             title="Defina sua senha"
             subtitle="Finalize a criação da sua conta para acessar o dashboard e concluir a ativação."
             action={<ThemeToggle />}

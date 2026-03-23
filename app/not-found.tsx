@@ -33,7 +33,7 @@ export default function NotFound() {
         {/* Logo */}
         <Image
           src="/logo_extended.png"
-          alt="LeadSpy"
+          alt="AdSniper"
           width={140}
           height={36}
           className="h-9 w-auto object-contain"

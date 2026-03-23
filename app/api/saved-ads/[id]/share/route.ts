@@ -36,7 +36,7 @@ export async function POST(
     )
   }
 
-  const baseUrl = env.APP_URL || "https://app.leadspy.com.br"
+  const baseUrl = env.APP_URL || "https://app.adsniper.com.br"
   const shareUrl = `${baseUrl}/anuncio/${result.shareToken}`
 
   return NextResponse.json(

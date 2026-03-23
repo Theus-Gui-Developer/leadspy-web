@@ -43,7 +43,7 @@ export default function DashboardPage() {
             {/* Texto */}
             <div className="flex-1 space-y-2">
               <p className="text-sm font-semibold text-foreground">
-                Extensão LeadSpy
+                Extensão AdSniper
               </p>
               <p className="text-xs leading-relaxed text-muted-foreground">
                 Instale no Chrome e espione anúncios direto na Biblioteca do Meta.

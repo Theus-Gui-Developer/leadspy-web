@@ -17,7 +17,7 @@ export default function AfilitadoPage() {
     <div className="animate-fade-in space-y-6">
       <PageHeader
         title="Indique e ganhe"
-        description="Monetize sua audiência indicando o LeadSpy. Comissões de até 70% por venda."
+        description="Monetize sua audiência indicando o AdSniper. Comissões de até 70% por venda."
       />
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -80,7 +80,7 @@ export default function AfilitadoPage() {
                       2
                     </span>
                     <div className="space-y-1">
-                      <p className="text-xs font-semibold text-foreground">Afiliar-se ao LeadSpy</p>
+                      <p className="text-xs font-semibold text-foreground">Afiliar-se ao AdSniper</p>
                       <p className="text-[11px] leading-relaxed text-muted-foreground">
                         Obtenha seu link exclusivo rastreável.
                       </p>

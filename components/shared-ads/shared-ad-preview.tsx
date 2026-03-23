@@ -16,6 +16,7 @@ import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { SaveToAccountButton } from "@/components/shared-ads/save-to-account-button"
+import Link from "next/link"
 
 type SharedAd = {
   adId: string
@@ -80,7 +81,7 @@ export function SharedAdPreview({ ad, shareToken }: SharedAdPreviewProps) {
         <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
           <Image
             src="/logo_extended.png"
-            alt="LeadSpy"
+            alt="AdSniper"
             width={100}
             height={28}
             className="h-7 w-auto object-contain"
@@ -213,9 +214,9 @@ export function SharedAdPreview({ ad, shareToken }: SharedAdPreviewProps) {
           <div className="text-center">
             <p className="text-xs text-muted-foreground">
               Salve e organize anúncios da concorrência com o{" "}
-              <a href="/" className="font-medium text-primary hover:underline">
-                LeadSpy
-              </a>
+              <Link href="/" className="font-medium text-primary hover:underline">
+                AdSniper
+              </Link>
             </p>
           </div>
         </div>

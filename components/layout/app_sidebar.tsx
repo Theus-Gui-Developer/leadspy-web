@@ -99,7 +99,7 @@ export function AppSidebar({ user, onClose, collapsed = false, onToggleCollapse 
         <div className="flex items-center gap-2 px-4 py-5">
           <Image
             src="/logo_extended.png"
-            alt="LeadSpy"
+            alt="AdSniper"
             width={120}
             height={32}
             className="h-8 w-auto flex-1 object-contain object-left"
