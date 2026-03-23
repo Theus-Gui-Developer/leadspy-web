@@ -39,7 +39,7 @@ export function AffiliateBanner() {
             </span>
 
             {/* O número */}
-            <span className="bg-gradient-to-br from-foreground via-primary/80 to-primary bg-clip-text pr-2 font-mono text-[96px] leading-[1.1] font-black tracking-tighter text-transparent lg:text-[112px]">
+            <span className="bg-linear-to-br from-foreground via-primary/80 to-primary bg-clip-text pr-2 font-mono text-[96px] leading-[1.1] font-black tracking-tighter text-transparent lg:text-[112px]">
               70%
             </span>
           </div>
@@ -49,7 +49,7 @@ export function AffiliateBanner() {
         </div>
 
         {/* Separador vertical */}
-        <div className="hidden h-32 w-px bg-gradient-to-b from-transparent via-primary/20 to-transparent lg:block" />
+        <div className="hidden h-32 w-px bg-linear-to-b from-transparent via-primary/20 to-transparent lg:block" />
 
         {/* Copy */}
         <div className="flex-1 space-y-5">
