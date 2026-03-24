@@ -25,10 +25,21 @@ type MapLink = {
   description?: string
 }
 
-type MapState =
-  | { status: "loading" }
-  | { status: "success"; links: MapLink[]; total: number; warning: string | null }
-  | { status: "error"; message: string }
+type MapSuccessResponse = {
+  ok: true
+  links: MapLink[]
+  total: number
+  warning: string | null
+}
+
+type MapErrorResponse = {
+  ok: false
+  message: string
+}
+
+type MapResponse = MapSuccessResponse | MapErrorResponse
+
+type CallStatus = "loading" | "done" | "error"
 
 type ResearchQuery = {
   id: string
@@ -115,55 +126,128 @@ function googleSearchUrl(query: string): string {
   return `https://www.google.com/search?q=${encodeURIComponent(query)}`
 }
 
+function getMapRequestKey(domain: string, mode: "discovery" | "sitemap") {
+  return `${domain}::${mode}`
+}
+
+const mapResponseCache = new Map<string, MapSuccessResponse>()
+const mapRequestCache = new Map<string, Promise<MapResponse>>()
+
+async function fetchMapLinks(
+  domain: string,
+  mode: "discovery" | "sitemap",
+): Promise<MapResponse> {
+  const key = getMapRequestKey(domain, mode)
+  const cachedResponse = mapResponseCache.get(key)
+
+  if (cachedResponse) {
+    return cachedResponse
+  }
+
+  const pendingRequest = mapRequestCache.get(key)
+
+  if (pendingRequest) {
+    return pendingRequest
+  }
+
+  // Deduplica chamadas identicas no client, especialmente em desenvolvimento
+  // quando o React remonta componentes para validar efeitos.
+  const request = fetch("/api/funnel-analysis/map", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ domain, mode }),
+  })
+    .then(async (response) => (await response.json()) as MapResponse)
+    .then((json) => {
+      if (json.ok) {
+        mapResponseCache.set(key, json)
+      }
+
+      return json
+    })
+    .catch(
+      () =>
+        ({
+          ok: false,
+          message: "Não foi possível mapear o domínio.",
+        }) satisfies MapErrorResponse,
+    )
+    .finally(() => {
+      mapRequestCache.delete(key)
+    })
+
+  mapRequestCache.set(key, request)
+
+  return request
+}
+
 // ---------------------------------------------------------------------------
 // Componente
 // ---------------------------------------------------------------------------
 
 export function FunnelMapPanel({ rootDomain }: { rootDomain: string }) {
-  const [state, setState] = useState<MapState>({ status: "loading" })
+  console.log("[FunnelMapPanel] renderizando — rootDomain:", rootDomain)
+  const [links, setLinks] = useState<MapLink[]>([])
+  const [discoveryStatus, setDiscoveryStatus] = useState<CallStatus>("loading")
+  const [sitemapStatus, setSitemapStatus] = useState<CallStatus>("loading")
   const [search, setSearch] = useState("")
   const [copiedQueryId, setCopiedQueryId] = useState<string | null>(null)
   const researchQueries = getResearchQueries(rootDomain)
 
   useEffect(() => {
     let cancelled = false
+    const byUrl = new Map<string, MapLink>()
 
-    async function fetchMap() {
-      setState({ status: "loading" })
+    function mergeLinks(newLinks: MapLink[]) {
+      for (const link of newLinks) {
+        const existing = byUrl.get(link.url)
+        if (!existing) {
+          byUrl.set(link.url, link)
+        } else if (link.title && !existing.title) {
+          byUrl.set(link.url, { ...existing, title: link.title })
+        }
+      }
+      if (!cancelled) setLinks(Array.from(byUrl.values()))
+    }
+
+    async function fetchMode(mode: "discovery" | "sitemap") {
+      const setStatus = mode === "discovery" ? setDiscoveryStatus : setSitemapStatus
       try {
-        const response = await fetch("/api/funnel-analysis/map", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ domain: rootDomain }),
-        })
-
-        const json = (await response.json()) as
-          | { ok: true; links: MapLink[]; total: number; warning: string | null }
-          | { ok: false; message: string }
-
+        const json = await fetchMapLinks(rootDomain, mode)
         if (cancelled) return
-        if (!json.ok) { setState({ status: "error", message: json.message }); return }
-        setState({ status: "success", links: json.links, total: json.total, warning: json.warning })
+        if (json.ok) mergeLinks(json.links)
+        setStatus(json.ok ? "done" : "error")
       } catch {
-        if (!cancelled) setState({ status: "error", message: "Falha ao buscar o mapa do domínio." })
+        if (!cancelled) setStatus("error")
       }
     }
 
-    fetchMap()
+    setLinks([])
+    setDiscoveryStatus("loading")
+    setSitemapStatus("loading")
+    byUrl.clear()
+
+    // Dispara os dois fetches independentemente — sem Promise.all
+    fetchMode("discovery")
+    fetchMode("sitemap")
+
     return () => { cancelled = true }
   }, [rootDomain])
 
-  const filteredLinks =
-    state.status === "success"
-      ? state.links.filter((l) => {
-          if (!search.trim()) return true
-          const q = search.toLowerCase()
-          return (
-            l.url.toLowerCase().includes(q) ||
-            (l.title ?? "").toLowerCase().includes(q)
-          )
-        })
-      : []
+  const anyDone = discoveryStatus === "done" || sitemapStatus === "done"
+  const bothDone = discoveryStatus !== "loading" && sitemapStatus !== "loading"
+  const bothError = discoveryStatus === "error" && sitemapStatus === "error"
+
+  const filteredLinks = anyDone
+    ? links.filter((l) => {
+        if (!search.trim()) return true
+        const q = search.toLowerCase()
+        return (
+          l.url.toLowerCase().includes(q) ||
+          (l.title ?? "").toLowerCase().includes(q)
+        )
+      })
+    : []
 
   async function handleCopyQuery(id: string, query: string) {
     await navigator.clipboard.writeText(query)
@@ -189,40 +273,34 @@ export function FunnelMapPanel({ rootDomain }: { rootDomain: string }) {
               </p>
             </div>
           </div>
-          {state.status === "success" && (
+          {anyDone && (
             <span className="shrink-0 rounded border border-border bg-secondary px-2.5 py-1 font-mono text-xs text-muted-foreground">
-              {state.total} URLs
+              {links.length} URLs{!bothDone && <span className="ml-1 animate-pulse">…</span>}
             </span>
           )}
         </div>
 
-        {/* Loading */}
-        {state.status === "loading" && (
+        {/* Loading inicial — nenhum resultado ainda */}
+        {!anyDone && !bothError && (
           <div className="flex flex-col items-center gap-3 py-10">
             <LoadingSpinner size="md" label="Mapeando domínio..." />
             <p className="animate-pulse text-sm text-muted-foreground">
               Descobrindo URLs de <span className="font-mono font-medium">{rootDomain}</span>…
             </p>
-            <p className="text-xs text-muted-foreground/50">Pode levar até 60 segundos</p>
           </div>
         )}
 
-        {/* Erro */}
-        {state.status === "error" && (
+        {/* Erro total — ambas as chamadas falharam */}
+        {bothError && (
           <div className="flex items-center gap-2.5 rounded-md border border-destructive/30 bg-destructive/5 p-3">
             <HugeiconsIcon icon={AlertCircleIcon} size={15} className="shrink-0 text-destructive" />
-            <p className="text-sm text-destructive">{state.message}</p>
+            <p className="text-sm text-destructive">Não foi possível mapear o domínio.</p>
           </div>
         )}
 
-        {/* Sucesso */}
-        {state.status === "success" && (
+        {/* Resultados (parciais ou completos) */}
+        {anyDone && (
           <div className="space-y-3">
-            {state.warning && (
-              <p className="rounded border border-amber-500/20 bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-400">
-                {state.warning}
-              </p>
-            )}
 
             {/* Campo de busca */}
             <div className="relative">
@@ -242,7 +320,7 @@ export function FunnelMapPanel({ rootDomain }: { rootDomain: string }) {
               />
               {search && (
                 <span className="absolute inset-y-0 right-3 flex items-center text-xs text-muted-foreground">
-                  {filteredLinks.length}/{state.total}
+                  {filteredLinks.length}/{links.length}
                 </span>
               )}
             </div>

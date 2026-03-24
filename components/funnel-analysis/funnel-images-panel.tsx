@@ -28,6 +28,7 @@ function proxyUrl(imageUrl: string): string {
 // ---------------------------------------------------------------------------
 
 export function FunnelImagesPanel({ result }: { result: FunnelAnalysisResult }) {
+  console.log("[FunnelImagesPanel] renderizando —", result.images.length, "imagens")
   const images = result.images
   const [open, setOpen] = useState(false)
   const [zipping, setZipping] = useState(false)

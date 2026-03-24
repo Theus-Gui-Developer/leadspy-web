@@ -1,10 +1,10 @@
 import { createSqlClient, hashPassword } from "./_shared"
 
 const userSeed = {
-  name: "Matheus",
-  email: "denerbisposilva@gmail.com",
-  password: "LeadSpy@123456",
-  role: "admin" as const,
+  name: "Juan",
+  email: "conceicao.juan02@gmail.com",
+  password: "12345678",
+  role: "customer" as const,
 }
 
 async function main() {

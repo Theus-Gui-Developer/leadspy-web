@@ -1,10 +1,12 @@
+import fs from "fs"
+import path from "path"
+
 import { NextResponse } from "next/server"
 
 import { getAuthenticatedUserFromRequest } from "@/lib/auth/session"
 import { buildCorsHeaders, buildOptionsCorsResponse } from "@/lib/http/cors"
 import {
   firecrawlMap,
-  type FirecrawlMapDocument,
   FirecrawlNetworkError,
   FirecrawlServiceError,
   FirecrawlTimeoutError,
@@ -12,27 +14,48 @@ import {
 
 export const runtime = "nodejs"
 
+function dumpToFile(filename: string, data: unknown) {
+  try {
+    const filePath = path.join(process.cwd(), "..", filename)
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8")
+    console.log(`[map] dump salvo em: ${filePath}`)
+  } catch (err) {
+    console.error("[map] falha ao salvar dump:", err)
+  }
+}
+
 export async function OPTIONS(request: Request) {
   return buildOptionsCorsResponse(request)
 }
 
 export async function POST(request: Request) {
+  const ts = () => new Date().toISOString()
+  console.log(`\n[map] ──────────────────────────────────────────`)
+  console.log(`[map] ${ts()} → nova requisição recebida`)
+
   const corsHeaders = buildCorsHeaders(request)
+
+  // ── Auth ──────────────────────────────────────────────────────────────────
+  console.log(`[map] ${ts()} verificando autenticação...`)
   const authenticatedUser = await getAuthenticatedUserFromRequest(request)
 
   if (!authenticatedUser) {
+    console.log(`[map] ${ts()} ✗ não autenticado — abortando`)
     return NextResponse.json(
       { ok: false, message: "Nao autenticado." },
       { status: 401, headers: corsHeaders },
     )
   }
+  console.log(`[map] ${ts()} ✓ autenticado`)
 
   // ── Parse do payload ──────────────────────────────────────────────────────
+  console.log(`[map] ${ts()} lendo payload...`)
   let payload: unknown
 
   try {
     payload = JSON.parse(await request.text())
   } catch {
+    console.log(`[map] ${ts()} ✗ payload JSON inválido`)
     return NextResponse.json(
       { ok: false, message: "Payload JSON invalido." },
       { status: 400, headers: corsHeaders },
@@ -40,23 +63,33 @@ export async function POST(request: Request) {
   }
 
   if (!payload || typeof payload !== "object") {
+    console.log(`[map] ${ts()} ✗ payload não é objeto`)
     return NextResponse.json(
       { ok: false, message: "Payload invalido." },
       { status: 400, headers: corsHeaders },
     )
   }
 
-  const { domain } = payload as Record<string, unknown>
+  const { domain, mode } = payload as Record<string, unknown>
+  console.log(`[map] ${ts()} domain = ${domain}, mode = ${mode ?? "(não definido)"}`)
 
   if (typeof domain !== "string" || domain.trim().length === 0) {
+    console.log(`[map] ${ts()} ✗ campo 'domain' ausente ou vazio`)
     return NextResponse.json(
       { ok: false, message: "Campo 'domain' e obrigatorio." },
       { status: 400, headers: corsHeaders },
     )
   }
 
-  // ── Normaliza o domínio para uma URL base válida ──────────────────────────
-  // Recebe "kiwify.com.br" ou "https://kiwify.com.br" — normaliza para URL.
+  if (mode !== undefined && mode !== "discovery" && mode !== "sitemap") {
+    console.log(`[map] ${ts()} ✗ mode inválido: ${mode}`)
+    return NextResponse.json(
+      { ok: false, message: "Campo 'mode' invalido. Use 'discovery' ou 'sitemap'." },
+      { status: 400, headers: corsHeaders },
+    )
+  }
+
+  // ── Normaliza o domínio ───────────────────────────────────────────────────
   let baseUrl: string
   try {
     const raw = domain.trim()
@@ -64,88 +97,66 @@ export async function POST(request: Request) {
       ? raw
       : `https://${raw}`
     const parsed = new URL(withProtocol)
-    // Usa apenas origin (protocolo + hostname), sem path
     baseUrl = parsed.origin
   } catch {
+    console.log(`[map] ${ts()} ✗ domínio inválido: ${domain}`)
     return NextResponse.json(
       { ok: false, message: "Dominio invalido." },
       { status: 422, headers: corsHeaders },
     )
   }
+  console.log(`[map] ${ts()} ✓ baseUrl normalizada: ${baseUrl}`)
 
   // ── Chama o Firecrawl /v2/map ─────────────────────────────────────────────
-  try {
-    const [discoveryResult, sitemapResult] = await Promise.all([
-      firecrawlMap({
-        url: baseUrl,
-        limit: 500,
-        includeSubdomains: true,
-        ignoreQueryParameters: true,
-        sitemap: "skip",
-      }),
-      firecrawlMap({
-        url: baseUrl,
-        limit: 500,
-        includeSubdomains: true,
-        ignoreQueryParameters: true,
-        sitemap: "only",
-      }),
-    ])
+  const callMode = (mode as "discovery" | "sitemap" | undefined) ?? "discovery"
+  console.log(`[map] ${ts()} → chamando firecrawlMap (mode=${callMode})...`)
+  const mapStart = Date.now()
 
-    if (!discoveryResult.success && !sitemapResult.success) {
+  try {
+    const result = await firecrawlMap({
+      url: baseUrl,
+      limit: 500,
+      includeSubdomains: true,
+      ignoreQueryParameters: true,
+      sitemap: callMode === "sitemap" ? "only" : "skip",
+    })
+
+    const mapMs = Date.now() - mapStart
+    console.log(`[map] ${ts()} ✓ firecrawlMap retornou em ${mapMs}ms`)
+    console.log(`[map] ${ts()} result.success = ${result.success}`)
+
+    // Salva resposta bruta do Firecrawl em disco
+    dumpToFile(`debug-map-${callMode}-raw.json`, result)
+
+    if (!result.success) {
+      console.log(`[map] ${ts()} ✗ firecrawl map error: ${result.error}`)
       return NextResponse.json(
         {
           ok: false,
-          message: `Firecrawl nao conseguiu mapear o dominio: ${discoveryResult.error}`,
+          message: `Firecrawl nao conseguiu mapear o dominio: ${result.error}`,
         },
         { status: 502, headers: corsHeaders },
       )
     }
 
-    const byUrl = new Map<string, FirecrawlMapDocument>()
+    console.log(`[map] ${ts()} links retornados = ${result.links.length}`)
+    if (result.warning) console.log(`[map] ${ts()} warning: ${result.warning}`)
 
-    function appendLinks(links: FirecrawlMapDocument[]) {
-      for (const link of links) {
-        const existing = byUrl.get(link.url)
-
-        if (!existing) {
-          byUrl.set(link.url, link)
-          continue
-        }
-
-        if ((link.title && !existing.title) || (link.description && !existing.description)) {
-          byUrl.set(link.url, {
-            url: link.url,
-            title: link.title ?? existing.title,
-            description: link.description ?? existing.description,
-          })
-        }
-      }
+    const responseJson = {
+      ok: true,
+      domain: baseUrl,
+      total: result.links.length,
+      links: result.links,
+      warning: result.warning ?? null,
     }
+    const responseSize = JSON.stringify(responseJson).length
+    console.log(`[map] ${ts()} → enviando resposta (${(responseSize / 1024).toFixed(1)} kB)`)
 
-    if (discoveryResult.success) appendLinks(discoveryResult.links)
-    if (sitemapResult.success) appendLinks(sitemapResult.links)
-
-    const warning = [
-      discoveryResult.success ? discoveryResult.warning : null,
-      sitemapResult.success ? sitemapResult.warning : null,
-    ]
-      .filter((value): value is string => typeof value === "string" && value.length > 0)
-      .join(" | ") || null
-
-    const links = Array.from(byUrl.values())
-
-    return NextResponse.json(
-      {
-        ok: true,
-        domain: baseUrl,
-        total: links.length,
-        links,
-        warning,
-      },
-      { status: 200, headers: corsHeaders },
-    )
+    return NextResponse.json(responseJson, { status: 200, headers: corsHeaders })
   } catch (err) {
+    const mapMs = Date.now() - mapStart
+    console.log(`[map] ${ts()} ✗ erro após ${mapMs}ms:`, err)
+
     if (err instanceof FirecrawlTimeoutError) {
       return NextResponse.json(
         {
@@ -176,7 +187,7 @@ export async function POST(request: Request) {
       )
     }
 
-    console.error("[funnel-analysis/map] erro inesperado:", err)
+    console.error("[map] erro inesperado:", err)
 
     return NextResponse.json(
       { ok: false, message: "Erro interno inesperado." },

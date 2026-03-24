@@ -33,9 +33,6 @@ export type FunnelAnalysisResult = {
   /** Domínios externos encontrados nos links */
   externalDomains: string[]
 
-  // ── Sinais / rastreadores ─────────────────────────────────────────────────
-  signals: string[]
-
   // ── Conteúdo ──────────────────────────────────────────────────────────────
   /** Markdown da página para exibição/análise */
   markdown: string | null

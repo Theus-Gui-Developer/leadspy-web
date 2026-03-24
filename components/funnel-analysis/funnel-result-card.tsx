@@ -12,7 +12,6 @@ import {
   AtIcon,
   ExternalLink,
   LinkSquare02Icon,
-  Wifi01Icon,
 } from "@hugeicons/core-free-icons"
 
 import { Card, CardContent } from "@/components/ui/card"
@@ -134,11 +133,11 @@ function ExpandableCard({
 // ---------------------------------------------------------------------------
 
 export function FunnelResultCard({ result }: { result: FunnelAnalysisResult }) {
+  console.log("[FunnelResultCard] renderizando — ogImage:", result.ogImage, "| images:", result.images.length)
   const hasRedirect = result.finalUrl !== result.initialUrl
   const hasCheckouts = result.checkoutLinks.length > 0
   const hasSubdomains = result.linkedSubdomains.length > 0
   const hasExternalDomains = result.externalDomains.length > 0
-  const hasSignals = result.signals.length > 0
   const hasRedirects = result.redirectChain.length > 0
   const hasOgPreview = !!(result.ogImage || result.pageTitle || result.ogDescription)
 
@@ -336,31 +335,6 @@ export function FunnelResultCard({ result }: { result: FunnelAnalysisResult }) {
             </div>
           )}
 
-          {hasSignals && <div className="border-t border-border/50" />}
-
-          {/* Sinais */}
-          <div>
-            <div className="mb-2 flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <HugeiconsIcon icon={Wifi01Icon} size={14} className="text-emerald-600 dark:text-emerald-400" />
-                <SectionLabel>Sinais e pixels</SectionLabel>
-              </div>
-              {hasSignals && (
-                <span className="rounded-sm bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                  {result.signals.length}
-                </span>
-              )}
-            </div>
-            {hasSignals ? (
-              <div className="flex flex-wrap gap-1.5">
-                {result.signals.map((signal) => (
-                  <Chip key={signal} variant="signal">{signal}</Chip>
-                ))}
-              </div>
-            ) : (
-              <p className="text-xs text-muted-foreground/50">Nenhum detectado</p>
-            )}
-          </div>
         </ExpandableCard>
       </div>
 

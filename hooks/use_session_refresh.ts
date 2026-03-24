@@ -12,6 +12,8 @@ const CHECK_INTERVAL_MS = 60 * 1000 // verifica a cada 60 segundos
  * - Chama POST /api/auth/refresh quando o token está a menos de 2 min de expirar.
  * - Se o refresh falhar (sessão inválida ou sem assinatura), redireciona para /login.
  * - O backend já rotaciona os cookies httpOnly automaticamente na resposta do refresh.
+ * - Após refresh bem-sucedido, atualiza expiresAtRef diretamente com o valor retornado
+ *   pela API — sem chamar router.refresh(), que causaria um re-render SSR desnecessário.
  */
 export function useSessionRefresh(accessTokenExpiresAt: string) {
   const router = useRouter()
@@ -46,9 +48,16 @@ export function useSessionRefresh(accessTokenExpiresAt: string) {
         }
 
         // Os novos cookies já foram setados pelo backend.
-        // Forçamos um recarregamento dos Server Components para pegar
-        // o novo accessTokenExpiresAt do layout.
-        router.refresh()
+        // Lemos o novo accessTokenExpiresAt diretamente da resposta para atualizar
+        // o ref local — sem precisar de router.refresh() (que faria um SSR completo
+        // e causaria re-renders desnecessários na página).
+        const json = (await response.json()) as {
+          ok: boolean
+          session?: { accessTokenExpiresAt?: string }
+        }
+        if (json.ok && json.session?.accessTokenExpiresAt) {
+          expiresAtRef.current = json.session.accessTokenExpiresAt
+        }
       } catch {
         // Falha de rede — não redireciona imediatamente, tenta novamente na próxima verificação
       }

@@ -1,6 +1,7 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import dynamic from "next/dynamic"
+import { useEffect, useMemo, useRef, useState, useTransition } from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   Copy01Icon,
@@ -12,7 +13,6 @@ import {
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { MarkdownRenderer } from "@/components/ui/markdown-renderer"
 import { cn } from "@/lib/utils"
 import type { FunnelAnalysisResult } from "@/lib/funnel-analysis/types"
 
@@ -27,7 +27,7 @@ type PromptContext = {
   platform: string | null
   pageType: string | null
   language: string | null
-  signals: string[]
+
   checkoutLinks: string[]
   externalDomains: string[]
   slugs: string[]
@@ -51,7 +51,7 @@ function ctx2text(ctx: PromptContext): string {
   if (ctx.slugs.length) lines.push(`Segmentos da URL: /${ctx.slugs.join("/")}`)
   if (ctx.checkoutLinks.length) lines.push(`Links de checkout detectados:\n${ctx.checkoutLinks.map((l) => `  - ${l}`).join("\n")}`)
   if (ctx.externalDomains.length) lines.push(`Plataformas externas vinculadas: ${ctx.externalDomains.join(", ")}`)
-  if (ctx.signals.length) lines.push(`Rastreadores / pixels ativos: ${ctx.signals.join(", ")}`)
+
   return lines.join("\n")
 }
 
@@ -642,6 +642,28 @@ ${ctx.markdown}
   },
 ]
 
+const PROMPT_MARKDOWN_LIMIT = 10_000
+const PROMPT_PREVIEW_LIMIT = 400
+
+function MarkdownLoadingState() {
+  return (
+    <div className="space-y-3">
+      <div className="h-4 w-40 animate-pulse rounded bg-zinc-200" />
+      <div className="h-3 w-full animate-pulse rounded bg-zinc-200" />
+      <div className="h-3 w-5/6 animate-pulse rounded bg-zinc-200" />
+      <div className="h-3 w-4/6 animate-pulse rounded bg-zinc-200" />
+    </div>
+  )
+}
+
+const LazyMarkdownRenderer = dynamic(
+  () => import("@/components/ui/markdown-renderer").then((mod) => mod.MarkdownRenderer),
+  {
+    ssr: false,
+    loading: () => <MarkdownLoadingState />,
+  },
+)
+
 // ---------------------------------------------------------------------------
 // Componente
 // ---------------------------------------------------------------------------
@@ -652,29 +674,40 @@ export function FunnelMarkdownPanel({ result }: { result: FunnelAnalysisResult }
   const [dropdownDirection, setDropdownDirection] = useState<"down" | "up">("down")
   const [copied, setCopied] = useState(false)
   const [markdownOpen, setMarkdownOpen] = useState(true)
+  const [isMarkdownPending, startMarkdownTransition] = useTransition()
   const selectRef = useRef<HTMLDivElement>(null)
 
   const markdown = result.markdown ?? ""
   const hasMarkdown = markdown.trim().length > 0
 
-  const ctx: PromptContext = {
-    rootDomain: result.rootDomain,
-    url: result.initialUrl,
-    finalUrl: result.finalUrl,
-    platform: result.platform,
-    pageType: result.pageType,
-    language: result.language,
-    signals: result.signals,
-    checkoutLinks: result.checkoutLinks,
-    externalDomains: result.externalDomains,
-    slugs: result.slugs,
-    ogTitle: result.ogTitle,
-    ogDescription: result.ogDescription,
-    keywords: result.keywords,
-    markdown: markdown.slice(0, 10000),
-  }
+  const ctx = useMemo<PromptContext>(
+    () => ({
+      rootDomain: result.rootDomain,
+      url: result.initialUrl,
+      finalUrl: result.finalUrl,
+      platform: result.platform,
+      pageType: result.pageType,
+      language: result.language,
+      checkoutLinks: result.checkoutLinks,
+      externalDomains: result.externalDomains,
+      slugs: result.slugs,
+      ogTitle: result.ogTitle,
+      ogDescription: result.ogDescription,
+      keywords: result.keywords,
+      markdown: markdown.slice(0, PROMPT_MARKDOWN_LIMIT),
+    }),
+    [markdown, result],
+  )
 
-  const selected = PREPROMPTS.find((p) => p.id === selectedId) ?? PREPROMPTS[0]!
+  const selected = useMemo(
+    () => PREPROMPTS.find((p) => p.id === selectedId) ?? PREPROMPTS[0]!,
+    [selectedId],
+  )
+  const selectedPrompt = useMemo(() => selected.build(ctx), [ctx, selected])
+  const promptPreview = useMemo(
+    () => selectedPrompt.slice(0, PROMPT_PREVIEW_LIMIT),
+    [selectedPrompt],
+  )
 
   useEffect(() => {
     if (!dropdownOpen) return
@@ -723,9 +756,20 @@ export function FunnelMarkdownPanel({ result }: { result: FunnelAnalysisResult }
   }, [dropdownOpen])
 
   async function handleCopy() {
-    await navigator.clipboard.writeText(selected.build(ctx))
+    await navigator.clipboard.writeText(selectedPrompt)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  function handleMarkdownToggle() {
+    if (markdownOpen) {
+      setMarkdownOpen(false)
+      return
+    }
+
+    startMarkdownTransition(() => {
+      setMarkdownOpen(true)
+    })
   }
 
   return (
@@ -819,7 +863,7 @@ export function FunnelMarkdownPanel({ result }: { result: FunnelAnalysisResult }
           </div>
           <div className="relative max-h-32 overflow-hidden p-3">
             <p className="whitespace-pre-wrap font-mono text-xs leading-relaxed text-muted-foreground">
-              {selected.build(ctx).slice(0, 400)}
+              {promptPreview}
             </p>
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-muted/60 to-transparent" />
           </div>
@@ -849,7 +893,7 @@ export function FunnelMarkdownPanel({ result }: { result: FunnelAnalysisResult }
           <div className="border-t border-border/50 pt-4">
             <button
               type="button"
-              onClick={() => setMarkdownOpen((v) => !v)}
+              onClick={handleMarkdownToggle}
               className="flex w-full items-center justify-between gap-3 text-left transition-colors hover:opacity-80"
             >
               <span className="text-sm font-semibold text-foreground">
@@ -857,7 +901,7 @@ export function FunnelMarkdownPanel({ result }: { result: FunnelAnalysisResult }
               </span>
               <span className="flex shrink-0 items-center gap-1.5">
                 <span className="rounded border border-border bg-muted px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
-                  {Math.round(markdown.length / 1000)}k chars
+                  {Math.max(1, Math.round(markdown.length / 1000))}k chars
                 </span>
                 <HugeiconsIcon
                   icon={markdownOpen ? ArrowUp01Icon : ArrowDown01Icon}
@@ -870,7 +914,11 @@ export function FunnelMarkdownPanel({ result }: { result: FunnelAnalysisResult }
             {markdownOpen && (
               <div className="mt-3 overflow-hidden rounded-md border border-zinc-200 bg-zinc-50">
                 <div className="max-h-[500px] overflow-y-auto p-5">
-                  <MarkdownRenderer content={markdown} />
+                  {isMarkdownPending ? (
+                    <MarkdownLoadingState />
+                  ) : (
+                    <LazyMarkdownRenderer content={markdown} />
+                  )}
                 </div>
               </div>
             )}

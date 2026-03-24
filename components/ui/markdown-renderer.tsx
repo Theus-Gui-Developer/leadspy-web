@@ -1,246 +1,171 @@
 "use client"
 
-import React from "react"
+import { memo } from "react"
+import ReactMarkdown, {
+  defaultUrlTransform,
+  type Components,
+} from "react-markdown"
+import remarkGfm from "remark-gfm"
+
 import { cn } from "@/lib/utils"
 
-// ---------------------------------------------------------------------------
-// Tipos internos
-// ---------------------------------------------------------------------------
+const REMARK_PLUGINS = [remarkGfm]
 
-type Block =
-  | { kind: "heading"; level: number; text: string }
-  | { kind: "hr" }
-  | { kind: "ul"; items: string[] }
-  | { kind: "ol"; items: string[] }
-  | { kind: "pre"; lang: string; text: string }
-  | { kind: "p"; text: string }
-
-// ---------------------------------------------------------------------------
-// Parse inline: **bold**, *italic*, `code`, [link](url)
-// ---------------------------------------------------------------------------
-
-function parseInline(text: string, keyPrefix: string): React.ReactNode {
-  const parts: React.ReactNode[] = []
-  // Order matters: ** before *, longer patterns first
-  const re = /(\*\*([^*\n]+)\*\*|\*([^*\n]+)\*|`([^`\n]+)`|\[([^\]\n]+)\]\(([^)\n]+)\))/g
-  let last = 0
-  let m: RegExpExecArray | null
-  let idx = 0
-
-  while ((m = re.exec(text)) !== null) {
-    if (m.index > last) {
-      parts.push(text.slice(last, m.index))
-    }
-    const key = `${keyPrefix}-i${idx++}`
-    if (m[0].startsWith("**")) {
-      parts.push(
-        <strong key={key} className="font-semibold text-zinc-900">
-          {m[2]}
-        </strong>,
-      )
-    } else if (m[0].startsWith("*")) {
-      parts.push(<em key={key}>{m[3]}</em>)
-    } else if (m[0].startsWith("`")) {
-      parts.push(
-        <code key={key} className="rounded bg-zinc-200/80 px-1 py-0.5 font-mono text-[11px] text-zinc-700">
-          {m[4]}
-        </code>,
-      )
-    } else if (m[0].startsWith("[")) {
-      parts.push(
-        <a
-          key={key}
-          href={m[6]}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-600 underline underline-offset-2 hover:text-blue-800"
-        >
-          {m[5]}
-        </a>,
-      )
-    }
-    last = m.index + m[0].length
-  }
-
-  if (last < text.length) {
-    parts.push(text.slice(last))
-  }
-
-  return parts.length === 0 ? text : <>{parts}</>
-}
-
-// ---------------------------------------------------------------------------
-// Parse blocks
-// ---------------------------------------------------------------------------
-
-function parseBlocks(md: string): Block[] {
-  const blocks: Block[] = []
-  const lines = md.split("\n")
-  let i = 0
-
-  while (i < lines.length) {
-    const line = lines[i]!
-
-    // Blank line
-    if (line.trim() === "") {
-      i++
-      continue
-    }
-
-    // Heading: # ## ### …
-    const hm = line.match(/^(#{1,6})\s+(.+)$/)
-    if (hm) {
-      blocks.push({ kind: "heading", level: hm[1]!.length, text: hm[2]! })
-      i++
-      continue
-    }
-
-    // HR: --- or *** or ___
-    if (/^[-*_]{3,}\s*$/.test(line)) {
-      blocks.push({ kind: "hr" })
-      i++
-      continue
-    }
-
-    // Fenced code block
-    const fenceMatch = line.match(/^```(\w*)/)
-    if (fenceMatch) {
-      const lang = fenceMatch[1] ?? ""
-      const codeLines: string[] = []
-      i++
-      while (i < lines.length && !lines[i]!.startsWith("```")) {
-        codeLines.push(lines[i]!)
-        i++
-      }
-      blocks.push({ kind: "pre", lang, text: codeLines.join("\n") })
-      i++ // skip closing ```
-      continue
+const MARKDOWN_COMPONENTS = {
+  h1({ children }) {
+    return <h1 className="mt-2 text-xl font-bold text-zinc-900">{children}</h1>
+  },
+  h2({ children }) {
+    return <h2 className="mt-1 text-lg font-bold text-zinc-900">{children}</h2>
+  },
+  h3({ children }) {
+    return <h3 className="text-base font-semibold text-zinc-800">{children}</h3>
+  },
+  h4({ children }) {
+    return <h4 className="text-sm font-semibold text-zinc-800">{children}</h4>
+  },
+  h5({ children }) {
+    return <h5 className="text-sm font-medium text-zinc-700">{children}</h5>
+  },
+  h6({ children }) {
+    return <h6 className="text-xs font-medium uppercase tracking-wide text-zinc-500">{children}</h6>
+  },
+  p({ children }) {
+    return <p className="text-zinc-600">{children}</p>
+  },
+  a({ children, href, ...props }) {
+    return (
+      <a
+        {...props}
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-600 underline underline-offset-2 hover:text-blue-800"
+      >
+        {children}
+      </a>
+    )
+  },
+  ul({ children }) {
+    return <ul className="list-disc space-y-1 pl-5 text-zinc-600">{children}</ul>
+  },
+  ol({ children }) {
+    return <ol className="list-decimal space-y-1 pl-5 text-zinc-600">{children}</ol>
+  },
+  li({ children }) {
+    return <li>{children}</li>
+  },
+  hr() {
+    return <hr className="border-zinc-200" />
+  },
+  blockquote({ children }) {
+    return (
+      <blockquote className="border-l-2 border-zinc-300 pl-4 italic text-zinc-600">
+        {children}
+      </blockquote>
+    )
+  },
+  code({ className, children, ...props }) {
+    return (
+      <code
+        {...props}
+        className={cn(
+          "rounded bg-zinc-200/80 px-1 py-0.5 font-mono text-[11px] text-zinc-700",
+          className,
+        )}
+      >
+        {children}
+      </code>
+    )
+  },
+  pre({ children }) {
+    return (
+      <pre className="overflow-x-auto rounded-md border border-zinc-200 bg-zinc-100 p-3 font-mono text-xs leading-relaxed text-zinc-700">
+        {children}
+      </pre>
+    )
+  },
+  table({ children }) {
+    return (
+      <div className="overflow-x-auto">
+        <table className="min-w-full border-collapse text-left text-xs text-zinc-700">
+          {children}
+        </table>
+      </div>
+    )
+  },
+  thead({ children }) {
+    return <thead className="bg-zinc-100">{children}</thead>
+  },
+  tbody({ children }) {
+    return <tbody>{children}</tbody>
+  },
+  tr({ children }) {
+    return <tr className="border-b border-zinc-200 align-top">{children}</tr>
+  },
+  th({ children }) {
+    return <th className="px-3 py-2 font-semibold text-zinc-900">{children}</th>
+  },
+  td({ children }) {
+    return <td className="px-3 py-2">{children}</td>
+  },
+  img({ alt, src }) {
+    if (!src) {
+      return null
     }
 
-    // Unordered list
-    if (/^[-*+]\s/.test(line)) {
-      const items: string[] = []
-      while (i < lines.length && /^[-*+]\s/.test(lines[i]!)) {
-        items.push(lines[i]!.replace(/^[-*+]\s+/, ""))
-        i++
-      }
-      blocks.push({ kind: "ul", items })
-      continue
-    }
-
-    // Ordered list
-    if (/^\d+[.)]\s/.test(line)) {
-      const items: string[] = []
-      while (i < lines.length && /^\d+[.)]\s/.test(lines[i]!)) {
-        items.push(lines[i]!.replace(/^\d+[.)]\s+/, ""))
-        i++
-      }
-      blocks.push({ kind: "ol", items })
-      continue
-    }
-
-    // Paragraph: collect until blank / block start
-    const pLines: string[] = []
-    while (
-      i < lines.length &&
-      lines[i]!.trim() !== "" &&
-      !/^#{1,6}\s/.test(lines[i]!) &&
-      !/^[-*_]{3,}\s*$/.test(lines[i]!) &&
-      !/^```/.test(lines[i]!) &&
-      !/^[-*+]\s/.test(lines[i]!) &&
-      !/^\d+[.)]\s/.test(lines[i]!)
-    ) {
-      pLines.push(lines[i]!)
-      i++
-    }
-    if (pLines.length > 0) {
-      blocks.push({ kind: "p", text: pLines.join("\n") })
-    }
-  }
-
-  return blocks
-}
-
-// ---------------------------------------------------------------------------
-// Estilos de heading por nível
-// ---------------------------------------------------------------------------
-
-const HEADING_CLS: Record<number, string> = {
-  1: "text-xl font-bold text-zinc-900 mt-2",
-  2: "text-lg font-bold text-zinc-900 mt-1",
-  3: "text-base font-semibold text-zinc-800",
-  4: "text-sm font-semibold text-zinc-800",
-  5: "text-sm font-medium text-zinc-700",
-  6: "text-xs font-medium uppercase tracking-wide text-zinc-500",
-}
-
-// ---------------------------------------------------------------------------
-// Componente principal
-// ---------------------------------------------------------------------------
+    return (
+      <a
+        href={src}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-start gap-2 rounded-md border border-zinc-200 bg-white px-3 py-2 no-underline transition-colors hover:bg-zinc-100"
+      >
+        <span className="shrink-0 rounded bg-zinc-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-500">
+          Imagem
+        </span>
+        <span className="min-w-0 space-y-0.5">
+          <span className="block text-xs font-medium text-zinc-900">
+            {alt?.trim() || "Abrir imagem"}
+          </span>
+          <span className="block truncate font-mono text-[11px] text-zinc-500">
+            {src.replace(/^https?:\/\//, "")}
+          </span>
+        </span>
+      </a>
+    )
+  },
+} satisfies Components
 
 interface MarkdownRendererProps {
   content: string
   className?: string
 }
 
-export function MarkdownRenderer({ content, className }: MarkdownRendererProps) {
-  const blocks = parseBlocks(content)
-
+const MarkdownRendererComponent = memo(function MarkdownRenderer({
+  content,
+  className,
+}: MarkdownRendererProps) {
   return (
-    <div className={cn("space-y-2 text-sm leading-relaxed", className)}>
-      {blocks.map((block, i) => {
-        const key = `b${i}`
-        switch (block.kind) {
-          case "heading":
-            return (
-              <div key={key} className={HEADING_CLS[block.level] ?? "font-semibold text-zinc-800"}>
-                {parseInline(block.text, key)}
-              </div>
-            )
-
-          case "hr":
-            return <hr key={key} className="border-zinc-200" />
-
-          case "ul":
-            return (
-              <ul key={key} className="list-disc space-y-1 pl-5">
-                {block.items.map((item, j) => (
-                  <li key={j} className="text-zinc-600">
-                    {parseInline(item, `${key}-${j}`)}
-                  </li>
-                ))}
-              </ul>
-            )
-
-          case "ol":
-            return (
-              <ol key={key} className="list-decimal space-y-1 pl-5">
-                {block.items.map((item, j) => (
-                  <li key={j} className="text-zinc-600">
-                    {parseInline(item, `${key}-${j}`)}
-                  </li>
-                ))}
-              </ol>
-            )
-
-          case "pre":
-            return (
-              <pre
-                key={key}
-                className="overflow-x-auto rounded-md border border-zinc-200 bg-zinc-100 p-3 font-mono text-xs leading-relaxed text-zinc-700"
-              >
-                {block.text}
-              </pre>
-            )
-
-          case "p":
-            return (
-              <p key={key} className="text-zinc-600">
-                {parseInline(block.text, key)}
-              </p>
-            )
-        }
-      })}
+    <div
+      className={cn("space-y-2 text-sm leading-relaxed", className)}
+      style={{
+        contentVisibility: "auto",
+        containIntrinsicSize: "500px",
+      }}
+    >
+      <ReactMarkdown
+        skipHtml
+        remarkPlugins={REMARK_PLUGINS}
+        components={MARKDOWN_COMPONENTS}
+        urlTransform={defaultUrlTransform}
+      >
+        {content}
+      </ReactMarkdown>
     </div>
   )
-}
+})
+
+MarkdownRendererComponent.displayName = "MarkdownRenderer"
+
+export { MarkdownRendererComponent as MarkdownRenderer }
