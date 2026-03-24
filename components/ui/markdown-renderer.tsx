@@ -110,9 +110,11 @@ const MARKDOWN_COMPONENTS = {
     return <td className="px-3 py-2">{children}</td>
   },
   img({ alt, src }) {
-    if (!src) {
+    if (typeof src !== "string" || src.length === 0) {
       return null
     }
+
+    const imageLabel = typeof alt === "string" && alt.trim().length > 0 ? alt.trim() : "Abrir imagem"
 
     return (
       <a
@@ -120,14 +122,12 @@ const MARKDOWN_COMPONENTS = {
         target="_blank"
         rel="noopener noreferrer"
         className="flex items-start gap-2 rounded-md border border-zinc-200 bg-white px-3 py-2 no-underline transition-colors hover:bg-zinc-100"
-      >
+        >
         <span className="shrink-0 rounded bg-zinc-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-500">
           Imagem
         </span>
         <span className="min-w-0 space-y-0.5">
-          <span className="block text-xs font-medium text-zinc-900">
-            {alt?.trim() || "Abrir imagem"}
-          </span>
+          <span className="block text-xs font-medium text-zinc-900">{imageLabel}</span>
           <span className="block truncate font-mono text-[11px] text-zinc-500">
             {src.replace(/^https?:\/\//, "")}
           </span>
