@@ -146,24 +146,13 @@ function SavedAdListRow({
   return (
     <>
       <div className="flex items-center gap-3 rounded-md border border-border/40 bg-card px-3 py-2.5 transition-colors hover:bg-accent/30">
-        {/* Thumbnail pequeno */}
-        <div className="size-10 shrink-0 overflow-hidden rounded-sm bg-muted/30">
-          {ad.thumbnailUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={ad.thumbnailUrl}
-              alt=""
-              className="size-full object-cover"
-            />
-          ) : (
-            <div className="flex size-full items-center justify-center">
-              <HugeiconsIcon
-                icon={getMediaIcon(ad.mediaType)}
-                size={16}
-                className="text-muted-foreground/40"
-              />
-            </div>
-          )}
+        {/* Ícone do tipo de mídia */}
+        <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-muted/40">
+          <HugeiconsIcon
+            icon={getMediaIcon(ad.mediaType)}
+            size={14}
+            className="text-muted-foreground/60"
+          />
         </div>
 
         {/* Anunciante + domínio */}

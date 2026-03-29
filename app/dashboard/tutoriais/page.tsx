@@ -1,12 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   PlayIcon,
   Locker01Icon,
   Search01Icon,
-  Clock01Icon,
   CheckmarkCircle01Icon,
 } from "@hugeicons/core-free-icons"
 
@@ -16,77 +15,76 @@ import { cn } from "@/lib/utils"
 type Lesson = {
   id: number
   title: string
-  duration?: string
   available: boolean
   description?: string
-  vtubePlayerId?: string
-  vtubeScriptSrc?: string
+  videoDataUrl?: string
 }
+
+const BUNNY_BASE = "https://prod-hostvsl.b-cdn.net/bf740540-7398-4153-9db7-a41a6866c02d"
 
 const lessons: Lesson[] = [
   {
     id: 1,
-    title: "Como baixar e instalar a extensão",
-    duration: "5:32",
+    title: "Como Instalar a Extensão",
     available: true,
     description:
       "Aprenda passo a passo como instalar o AdSniper no Chrome e configurar a extensão para começar a espiar os melhores anúncios do mercado.",
-    vtubePlayerId: "vid-69bb65d1b1f8e9f7f4eda04a",
-    vtubeScriptSrc:
-      "https://scripts.converteai.net/889b9fb5-4ff6-4d36-9bcd-f8fe563a9649/players/69bb65d1b1f8e9f7f4eda04a/v4/player.js",
+    videoDataUrl: `${BUNNY_BASE}/b4dc46ba-90a5-4494-8849-8a5359ba6234/videoInformations.js?VIDEO_ORIGIN=ORIGINAL`,
   },
   {
     id: 2,
-    title: "Como indicar o AdSniper e ganhar 70% de comissão",
-    duration: "8:15",
+    title: "Indique e Ganhe",
     available: true,
     description:
       "Veja como se tornar afiliado, gerar seu link rastreável e começar a faturar comissões por cada indicação convertida.",
-    vtubePlayerId: "vid-69bb65cdd54d8d20f1ffe999",
-    vtubeScriptSrc:
-      "https://scripts.converteai.net/889b9fb5-4ff6-4d36-9bcd-f8fe563a9649/players/69bb65cdd54d8d20f1ffe999/v4/player.js",
+    videoDataUrl: `${BUNNY_BASE}/0a122571-bb29-4bc9-8d39-c6a9c201b55c/videoInformations.js?VIDEO_ORIGIN=ORIGINAL`,
   },
   {
     id: 3,
-    title: "Como escolher uma oferta vencedora",
-    available: false,
+    title: "Entenda como funciona o AdSniper",
+    available: true,
+    description:
+      "Um tour completo pela plataforma: entenda cada funcionalidade e como tirar o máximo proveito do AdSniper na sua operação.",
+    videoDataUrl: `${BUNNY_BASE}/3b047c1e-db68-4e58-bdc1-84192e74864a/videoInformations.js?VIDEO_ORIGIN=ORIGINAL`,
   },
   {
     id: 4,
-    title: "Como clonar e criar sua página de vendas",
-    available: false,
+    title: "Análise de Funil",
+    available: true,
+    description:
+      "Aprenda a analisar o funil completo de um anunciante — da copy do anúncio até a página de vendas — e extraia insights para suas próprias campanhas.",
+    videoDataUrl: `${BUNNY_BASE}/ad193465-2e78-493f-b138-132066cc5cd0/videoInformations.js?VIDEO_ORIGIN=ORIGINAL`,
   },
   {
     id: 5,
-    title: "Como hospedar sua VSL e inserir no seu site",
-    available: false,
-  },
-  {
-    id: 6,
-    title: "Como cadastrar seu produto na Perfect Pay",
-    available: false,
+    title: "VSL Site",
+    available: true,
+    description:
+      "Descubra como criar e hospedar sua própria VSL, integrar ao seu site e usar o que aprendeu com os anúncios espionados para converter mais.",
+    videoDataUrl: `${BUNNY_BASE}/647385ac-46ed-48f1-bad5-6281779757ae/videoInformations.js?VIDEO_ORIGIN=ORIGINAL`,
   },
 ]
 
-const availableCount = lessons.filter((l) => l.available).length
+const BUNNY_SCRIPT = "https://script-prod.b-cdn.net/V0.530/"
 
-function VturbPlayer({ playerId, scriptSrc }: { playerId: string; scriptSrc: string }) {
-  useEffect(() => {
-    const script = document.createElement("script")
-    script.src = scriptSrc
-    script.async = true
-    document.head.appendChild(script)
-    return () => {
-      document.head.removeChild(script)
-    }
-  }, [scriptSrc])
-
+function BunnyPlayer({ videoDataUrl }: { videoDataUrl: string }) {
   return (
-    // @ts-expect-error – vturb-smartplayer is a custom element registered by the player script
-    <vturb-smartplayer
-      id={playerId}
-      style={{ display: "block", margin: "0 auto", width: "100%" }}
-    />
+    <div style={{ padding: "56.25% 0 0 0", position: "relative", overflow: "hidden" }}>
+      <iframe
+        src={`${BUNNY_SCRIPT}?videoData=${videoDataUrl}`}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          overflow: "hidden",
+          border: "none",
+        }}
+        allow="fullscreen"
+        referrerPolicy="unsafe-url"
+      />
+    </div>
   )
 }
 
@@ -98,6 +96,8 @@ export default function TutoriaisPage() {
   const filtered = search
     ? lessons.filter((l) => l.title.toLowerCase().includes(search.toLowerCase()))
     : lessons
+
+  const availableCount = lessons.filter((l) => l.available).length
 
   return (
     <div className="animate-fade-in space-y-6">
@@ -111,12 +111,8 @@ export default function TutoriaisPage() {
         <div className="flex flex-col gap-4">
           {/* Player */}
           <div className="overflow-hidden rounded-md border border-border bg-black">
-            {active.vtubePlayerId && active.vtubeScriptSrc ? (
-              <VturbPlayer
-                key={active.id}
-                playerId={active.vtubePlayerId}
-                scriptSrc={active.vtubeScriptSrc}
-              />
+            {active.videoDataUrl ? (
+              <BunnyPlayer key={active.id} videoDataUrl={active.videoDataUrl} />
             ) : active.available ? (
               <div className="flex aspect-video flex-col items-center justify-center gap-4">
                 <div className="flex size-16 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/15">
@@ -194,7 +190,7 @@ export default function TutoriaisPage() {
                   <button
                     key={lesson.id}
                     type="button"
-                    onClick={() => setActiveId(lesson.id)}
+                    onClick={() => isAvailable && setActiveId(lesson.id)}
                     className={cn(
                       "group flex w-full items-center gap-3 px-5 py-4 text-left transition-colors",
                       isActive
@@ -232,20 +228,13 @@ export default function TutoriaisPage() {
                       >
                         {lesson.title}
                       </p>
-                      <div className="mt-1">
-                        {isAvailable ? (
-                          lesson.duration && (
-                            <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                              <HugeiconsIcon icon={Clock01Icon} size={10} />
-                              {lesson.duration}
-                            </span>
-                          )
-                        ) : (
+                      {!isAvailable && (
+                        <div className="mt-1">
                           <span className="inline-block rounded-sm border border-border bg-muted px-1.5 py-px text-[10px] font-semibold tracking-wider text-muted-foreground uppercase">
                             Em breve
                           </span>
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </div>
 
                     {isActive && (

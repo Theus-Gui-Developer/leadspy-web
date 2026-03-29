@@ -1,5 +1,4 @@
 import Link from "next/link"
-import Script from "next/script"
 
 import { PageHeader } from "@/components/layout/page_header"
 import { CommissionCalculator } from "@/components/dashboard/commission-calculator"
@@ -25,15 +24,22 @@ export default function AfilitadoPage() {
         <div className="flex flex-col gap-4">
           {/* Vídeo VSL */}
           <div className="overflow-hidden rounded-md border border-border/40 bg-black">
-            {/* @ts-expect-error – vturb-smartplayer is a custom element registered by the player script */}
-            <vturb-smartplayer
-              id="vid-69bb65cdd54d8d20f1ffe999"
-              style={{ display: "block", margin: "0 auto", width: "100%" }}
-            />
-            <Script
-              src="https://scripts.converteai.net/889b9fb5-4ff6-4d36-9bcd-f8fe563a9649/players/69bb65cdd54d8d20f1ffe999/v4/player.js"
-              strategy="afterInteractive"
-            />
+            <div style={{ padding: "56.25% 0 0 0", position: "relative", overflow: "hidden" }}>
+              <iframe
+                src="https://script-prod.b-cdn.net/V0.530/?videoData=https://prod-hostvsl.b-cdn.net/bf740540-7398-4153-9db7-a41a6866c02d/0a122571-bb29-4bc9-8d39-c6a9c201b55c/videoInformations.js?VIDEO_ORIGIN=ORIGINAL"
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  overflow: "hidden",
+                  border: "none",
+                }}
+                allow="fullscreen"
+                referrerPolicy="unsafe-url"
+              />
+            </div>
           </div>
 
           {/* CTAs abaixo do vídeo */}

@@ -16,7 +16,6 @@ import {
   ViewIcon,
 } from "@hugeicons/core-free-icons"
 
-import { cn } from "@/lib/utils"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -29,12 +28,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 import { MoveToFolderDialog } from "@/components/saved-ads/move-to-folder-dialog"
 import { ShareDialog } from "@/components/saved-ads/share-dialog"
 import { AdDetailDialog } from "@/components/saved-ads/ad-detail-dialog"
@@ -105,12 +98,6 @@ export function SavedAdCard({
   })
   const [isSharing, setIsSharing] = useState(false)
 
-  const truncatedText = ad.adText
-    ? ad.adText.length > 120
-      ? `${ad.adText.slice(0, 120)}...`
-      : ad.adText
-    : null
-
   const currentFolder = ad.folderId
     ? folders.find((f) => f.id === ad.folderId)
     : null
@@ -146,44 +133,21 @@ export function SavedAdCard({
 
   return (
     <>
-      <Card
-        className="group flex flex-col overflow-hidden ring-foreground/10 transition-all duration-200 hover:ring-foreground/20"
-      >
-        {/* Thumbnail */}
-        {ad.thumbnailUrl && (
-          <div className="relative h-36 w-full overflow-hidden bg-muted/30">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={ad.thumbnailUrl}
-              alt={ad.advertiserName ?? "Anúncio"}
-              className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
-            />
-            <Badge
-              variant="secondary"
-              className="absolute left-2 top-2 gap-1 bg-background/80 backdrop-blur-sm"
-            >
-              <HugeiconsIcon icon={getMediaIcon(ad.mediaType)} size={11} />
-              {getMediaLabel(ad.mediaType)}
-            </Badge>
-          </div>
-        )}
-
-        {/* Sem thumbnail */}
-        {!ad.thumbnailUrl && (
-          <div className="flex h-24 items-center justify-center bg-muted/20">
-            <HugeiconsIcon
-              icon={getMediaIcon(ad.mediaType)}
-              size={28}
-              className="text-muted-foreground/40"
-            />
-          </div>
-        )}
-
+      <Card className="group flex flex-col overflow-hidden transition-all duration-200 hover:shadow-md hover:ring-1 hover:ring-foreground/10">
         {/* Conteúdo */}
         <div className="flex flex-1 flex-col gap-3 p-4">
-          {/* Header: Anunciante + Ações */}
+          {/* Header: Badge de mídia + Anunciante + Ações */}
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0 flex-1">
+              <div className="mb-1.5 flex items-center gap-1.5">
+                <Badge
+                  variant="secondary"
+                  className="gap-1 px-1.5 py-0.5 text-[10px]"
+                >
+                  <HugeiconsIcon icon={getMediaIcon(ad.mediaType)} size={10} />
+                  {getMediaLabel(ad.mediaType)}
+                </Badge>
+              </div>
               <p className="truncate text-sm font-semibold text-foreground">
                 {ad.advertiserName ?? "Anunciante desconhecido"}
               </p>
@@ -245,25 +209,17 @@ export function SavedAdCard({
           </div>
 
           {/* Texto do anúncio */}
-          {truncatedText && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger
-                  className={cn(
-                    "text-left text-xs leading-relaxed text-muted-foreground",
-                    ad.adText && ad.adText.length > 120 && "cursor-help",
-                  )}
-                >
-                  {truncatedText}
-                </TooltipTrigger>
-                {ad.adText && ad.adText.length > 120 && (
-                  <TooltipContent side="bottom" className="max-w-xs">
-                    <p className="text-xs leading-relaxed">{ad.adText.slice(0, 300)}...</p>
-                  </TooltipContent>
-                )}
-              </Tooltip>
-            </TooltipProvider>
-          )}
+          <div className="rounded-md bg-muted/30 p-3">
+            {ad.adText ? (
+              <p className="line-clamp-5 text-xs leading-relaxed text-muted-foreground">
+                {ad.adText}
+              </p>
+            ) : (
+              <p className="text-xs italic text-muted-foreground/40">
+                Sem texto disponível
+              </p>
+            )}
+          </div>
 
           {/* Footer */}
           <div className="mt-auto flex items-center justify-between gap-2 pt-1">
